@@ -46,6 +46,8 @@ async function guardAdmin() {
   if (!r.ok) { window.location.replace('/'); return false; }
   const { user } = await r.json();
   if (user.role !== 'admin') { window.location.replace('/dashboard.html'); return false; }
+  const uEl = document.getElementById('hdr-username');
+  if (uEl) uEl.textContent = user.username;
   return true;
 }
 

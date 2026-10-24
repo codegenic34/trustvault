@@ -388,12 +388,20 @@
   tabSignIn.addEventListener('click', () => switchTab('signin'));
   tabRegister.addEventListener('click', () => switchTab('register'));
 
-  // ── Demo Access Handlers (Rule 6) ──────────────────────────────────────────
-  function applyDemoLogin(role) {
+  // ── Demo Access Handlers (Rule 6 & User Request) ───────────────────────────
+  function applyDemoLogin(role, btnElement) {
     const creds = DEMO_CREDENTIALS[role];
     if (!creds) return;
 
+    // Trigger pop up animation
+    if (btnElement) {
+      btnElement.classList.remove('popping');
+      void btnElement.offsetWidth; // force DOM reflow
+      btnElement.classList.add('popping');
+    }
+
     switchTab('signin');
+    // ONLY username and password get entered
     signInUserEl.value = creds.u;
     signInPassEl.value = creds.p;
     hideError();
@@ -401,9 +409,9 @@
     signInBtn.focus();
   }
 
-  demoAdminBtn.addEventListener('click', () => applyDemoLogin('admin'));
-  demoOwnerBtn.addEventListener('click', () => applyDemoLogin('owner'));
-  demoViewerBtn.addEventListener('click', () => applyDemoLogin('viewer'));
+  demoAdminBtn.addEventListener('click', () => applyDemoLogin('admin', demoAdminBtn));
+  demoOwnerBtn.addEventListener('click', () => applyDemoLogin('owner', demoOwnerBtn));
+  demoViewerBtn.addEventListener('click', () => applyDemoLogin('viewer', demoViewerBtn));
 
   // ── Live Password Requirements & Strength (Rule 5) ────────────────────────
   function validatePasswordCriteria(pwd) {
