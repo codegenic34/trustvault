@@ -318,7 +318,7 @@ async function loadUsers() {
     } else if (u.role === 'owner') {
       badge.className = 'px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800 font-bold';
     } else {
-      badge.className = 'px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold';
+      badge.className = 'px-2 py-0.5 rounded-full bg-sky-950 text-sky-300 border border-sky-800 font-bold';
     }
     badge.textContent = u.role.toUpperCase();
     roleTd.appendChild(badge);
@@ -336,7 +336,7 @@ async function loadUsers() {
       actionTd.appendChild(btn);
     } else if (u.role === 'owner') {
       const btn = document.createElement('button');
-      btn.className = 'px-3 py-1 rounded bg-emerald-700 hover:bg-emerald-600 text-white font-semibold text-xs transition-colors shadow-sm';
+      btn.className = 'px-3 py-1 rounded bg-sky-700 hover:bg-sky-600 text-white font-semibold text-xs transition-colors shadow-sm';
       btn.textContent = 'Change to Viewer ⬇';
       btn.addEventListener('click', () => changeUserRole(u.id, u.username, 'viewer'));
       actionTd.appendChild(btn);

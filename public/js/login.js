@@ -552,7 +552,7 @@
     }
   });
 
-  // ── Show Landing Page After Successful Login ──────────────────────────────
+  // ── Show Minimalist Animated Person Landing Page After Login (2 to 3 seconds) ──
   function showLandingPage(user, targetUrl) {
     const overlay = document.getElementById('login-landing-overlay');
     if (!overlay) {
@@ -561,47 +561,25 @@
     }
 
     const usernameEl = document.getElementById('landing-username');
-    const roleBadgeEl = document.getElementById('landing-role-badge');
-    const countdownEl = document.getElementById('landing-countdown');
-    const continueBtn = document.getElementById('landing-continue-btn');
     const fillBar = document.getElementById('landing-progress-fill');
 
     if (usernameEl) usernameEl.textContent = user.username;
-    if (roleBadgeEl) {
-      roleBadgeEl.textContent = user.role.toUpperCase();
-      roleBadgeEl.className = 'landing-role-badge role-' + user.role;
-    }
 
     overlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 
-    // Start progress animation
+    // 2.5s smooth progress bar (2 to 3 seconds)
     if (fillBar) {
       fillBar.style.width = '0%';
       setTimeout(() => {
-        fillBar.style.transition = 'width 1.8s cubic-bezier(0.16, 1, 0.3, 1)';
+        fillBar.style.transition = 'width 2.4s cubic-bezier(0.16, 1, 0.3, 1)';
         fillBar.style.width = '100%';
       }, 50);
     }
 
-    let timeLeft = 2;
-    const interval = setInterval(() => {
-      timeLeft--;
-      if (countdownEl && timeLeft >= 0) {
-        countdownEl.textContent = String(timeLeft);
-      }
-      if (timeLeft <= 0) {
-        clearInterval(interval);
-        window.location.replace(targetUrl);
-      }
-    }, 900);
-
-    if (continueBtn) {
-      continueBtn.addEventListener('click', () => {
-        clearInterval(interval);
-        window.location.replace(targetUrl);
-      });
-    }
+    setTimeout(() => {
+      window.location.replace(targetUrl);
+    }, 2500);
   }
 
   // ── Create Account Form Submission (Rule 5) ────────────────────────────────

@@ -919,13 +919,13 @@ textarea {
   text-transform: uppercase;
 }
 
-/* ── Viewer in Light Green Colour ── */
+/* ── Viewer in Light Blue Colour ── */
 .demo-btn.demo-viewer {
-  border-color: rgba(74, 222, 128, 0.35);
+  border-color: rgba(56, 189, 248, 0.35);
 }
 .demo-btn.demo-viewer:hover {
-  border-color: #4ADE80;
-  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.3);
+  border-color: #38BDF8;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35);
 }
 .demo-btn.demo-viewer .user-name {
   color: #FFFFFF !important;
@@ -933,9 +933,9 @@ textarea {
   text-shadow: none;
 }
 .demo-btn.demo-viewer .role-tag {
-  color: #86EFAC !important;
+  color: #38BDF8 !important;
   font-weight: 800;
-  text-shadow: 0 0 10px rgba(74, 222, 128, 0.4);
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
 }
 
 /* Admin: white text, red tag, neutral hover */
@@ -1433,20 +1433,20 @@ textarea {
   box-shadow: 0 0 0 2px rgba(220, 174, 29, 0.3);
 }
 
-/* Viewer Role Styling - Light Green */
+/* Viewer Role Styling - Light Blue */
 .badge-viewer,
 .role-viewer,
 #prof-role-badge.badge-viewer {
-  background: rgba(74, 222, 128, 0.15) !important;
-  color: #4ADE80 !important;
-  border: 1px solid rgba(74, 222, 128, 0.4) !important;
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #38BDF8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.4) !important;
   font-weight: 700;
 }
 
 #hdr-role.role-viewer {
-  color: #4ADE80 !important;
+  color: #38BDF8 !important;
   font-weight: 700;
-  text-shadow: 0 0 8px rgba(74, 222, 128, 0.35);
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.35);
 }
 
 /* Sessions Cards */
@@ -1508,264 +1508,156 @@ textarea {
   box-shadow: 0 0 6px #10B981;
 }
 
-/* ── Successfully Logged In Animated Landing Overlay ── */
+/* ── Minimalist Animated Person Landing Overlay (2 to 3 seconds) ── */
 .login-landing-overlay {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: radial-gradient(circle at 50% 45%, #0B1322 0%, #03070E 100%);
+  background: radial-gradient(circle at 50% 50%, rgba(11, 19, 34, 0.96) 0%, rgba(3, 7, 14, 0.98) 100%);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  animation: overlayFadeIn 0.35s ease-out forwards;
+  padding: 24px;
+  animation: overlayFadeIn 0.3s ease-out forwards;
 }
 
-@keyframes overlayFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-.landing-bg-cyber {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.landing-radar-scanner {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 800px;
-  height: 800px;
-  transform: translate(-50%, -50%);
-  background: conic-gradient(from 0deg at 50% 50%, rgba(220, 174, 29, 0.08) 0deg, transparent 60deg, transparent 360deg);
-  border-radius: 50%;
-  animation: radarSpin 6s linear infinite;
-}
-
-@keyframes radarSpin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-.landing-pulse-rings {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  height: 600px;
-}
-
-.landing-ring {
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgba(202, 228, 219, 0.15);
-  border-radius: 50%;
-  animation: pulseRing 3s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
-}
-
-.landing-ring.ring-2 {
-  animation-delay: 1s;
-}
-
-.landing-ring.ring-3 {
-  animation-delay: 2s;
-}
-
-@keyframes pulseRing {
-  0% { transform: scale(0.3); opacity: 0.8; border-color: rgba(220, 174, 29, 0.5); }
-  100% { transform: scale(1.4); opacity: 0; border-color: rgba(202, 228, 219, 0.05); }
-}
-
-.landing-modal-card {
+.landing-person-card {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 480px;
-  background: linear-gradient(180deg, #0D1628 0%, #070B14 100%);
-  border: 1px solid rgba(202, 228, 219, 0.25);
+  max-width: 400px;
+  background: linear-gradient(180deg, #0D1628 0%, #080D18 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-xl);
-  padding: 38px 32px;
+  padding: 40px 32px;
   text-align: center;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 50px rgba(220, 174, 29, 0.12);
-  animation: cardPopUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(56, 189, 248, 0.08);
+  animation: personCardPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes cardPopUp {
-  from { opacity: 0; transform: scale(0.92) translateY(20px); }
+@keyframes personCardPop {
+  from { opacity: 0; transform: scale(0.9) translateY(14px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.landing-shield-wrap {
+.animated-person-wrapper {
   position: relative;
-  width: 76px;
-  height: 76px;
-  margin: 0 auto 16px;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 20px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.landing-shield-glow {
+.person-aura-glow {
   position: absolute;
-  inset: -8px;
-  background: radial-gradient(circle, rgba(220, 174, 29, 0.4) 0%, transparent 70%);
+  inset: -10px;
   border-radius: 50%;
-  animation: shieldGlow 2s ease-in-out infinite alternate;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%);
+  animation: personAuraPulse 2s ease-in-out infinite alternate;
 }
 
-@keyframes shieldGlow {
+@keyframes personAuraPulse {
   from { transform: scale(0.9); opacity: 0.5; }
-  to { transform: scale(1.15); opacity: 0.9; }
+  to { transform: scale(1.15); opacity: 0.85; }
 }
 
-.landing-logo {
-  width: 64px;
-  height: 64px;
+.animated-person-svg {
+  width: 100%;
+  height: 100%;
   position: relative;
   z-index: 2;
-  filter: drop-shadow(0 0 12px rgba(220, 174, 29, 0.6));
+  filter: drop-shadow(0 4px 12px rgba(56, 189, 248, 0.25));
 }
 
-.landing-badge-success {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 14px;
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.35);
-  border-radius: 999px;
-  font-size: 0.725rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  color: #34D399;
-  margin-bottom: 12px;
+.person-ring {
+  transform-origin: 60px 60px;
+  animation: ringSpin 10s linear infinite;
 }
 
-.landing-success-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #34D399;
-  box-shadow: 0 0 8px #34D399;
+@keyframes ringSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.landing-title {
-  font-size: 1.55rem;
-  font-weight: 800;
+.person-head {
+  transform-origin: 60px 38px;
+  animation: personFloat 2.4s ease-in-out infinite;
+}
+
+.person-body {
+  transform-origin: 60px 75px;
+  animation: personFloat 2.4s ease-in-out infinite 0.1s;
+}
+
+@keyframes personFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.person-hand-wave {
+  transform-origin: 84px 64px;
+  animation: handWave 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes handWave {
+  0% { transform: rotate(-5deg); }
+  100% { transform: rotate(14deg); }
+}
+
+.person-scan-beam {
+  animation: scanLine 2.2s ease-in-out infinite alternate;
+}
+
+@keyframes scanLine {
+  0% { transform: translateY(5px); opacity: 0.2; }
+  50% { opacity: 0.9; }
+  100% { transform: translateY(75px); opacity: 0.2; }
+}
+
+.person-badge-dot {
+  animation: dotPulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes dotPulse {
+  from { fill: #38BDF8; filter: drop-shadow(0 0 2px #38BDF8); }
+  to { fill: #93C5FD; filter: drop-shadow(0 0 6px #38BDF8); }
+}
+
+.landing-welcome-title {
+  font-size: 1.45rem;
+  font-weight: 700;
   color: #FFFFFF;
   margin-bottom: 6px;
   letter-spacing: -0.01em;
 }
 
-.landing-welcome {
-  font-size: 0.95rem;
-  color: #CBD5E1;
-  margin-bottom: 18px;
+.landing-welcome-title span {
+  color: #38BDF8;
 }
 
-.landing-welcome strong {
-  color: #FFFFFF;
+.landing-status-msg {
+  font-size: 0.85rem;
+  color: #94A3B8;
+  margin-bottom: 24px;
 }
 
-.landing-role-badge-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 22px;
-}
-
-.landing-role-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.landing-role-badge {
-  padding: 3px 12px;
-  border-radius: var(--radius-sm);
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.landing-role-badge.role-admin {
-  background: rgba(239, 68, 68, 0.2);
-  color: #F87171;
-  border: 1px solid rgba(239, 68, 68, 0.4);
-}
-
-.landing-role-badge.role-owner {
-  background: rgba(220, 174, 29, 0.2);
-  color: var(--accent-honey);
-  border: 1px solid rgba(220, 174, 29, 0.4);
-}
-
-.landing-role-badge.role-viewer {
-  background: rgba(74, 222, 128, 0.2);
-  color: #4ADE80;
-  border: 1px solid rgba(74, 222, 128, 0.4);
-}
-
-.landing-checklist {
-  background: rgba(5, 10, 18, 0.6);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 14px 18px;
-  margin-bottom: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  text-align: left;
-}
-
-.landing-check-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.825rem;
-  color: #E2E8F0;
-}
-
-.landing-check-icon {
-  color: #10B981;
-  font-weight: 900;
-  font-size: 0.95rem;
-}
-
-.landing-progress-wrap {
-  margin-bottom: 20px;
-}
-
-.landing-progress-track {
-  height: 6px;
+.landing-minimal-progress {
+  height: 4px;
   width: 100%;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   overflow: hidden;
-  margin-bottom: 8px;
 }
 
-.landing-progress-fill {
+.landing-minimal-bar {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #10B981 0%, var(--accent-honey) 100%);
+  background: #38BDF8;
+  box-shadow: 0 0 8px #38BDF8;
   border-radius: 999px;
-}
-
-.landing-progress-text {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-}
-
-.landing-continue-btn {
-  width: 100%;
-  padding: 12px;
-  font-size: 0.925rem;
 }
 
 @media (max-width: 768px) {
