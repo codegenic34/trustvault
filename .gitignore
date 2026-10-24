@@ -147,3 +147,9 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# TrustVault: never commit these
+.env
+storage/
+*.db
+*.sqlite
