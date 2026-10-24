@@ -129,41 +129,35 @@
     const mouse = { x: -1000, y: -1000, active: false };
 
     function resize() {
-      const parent = canvas.parentElement;
-      if (!parent) return;
-      width = canvas.width = parent.clientWidth;
-      height = canvas.height = parent.clientHeight;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
     }
 
     resize();
     window.addEventListener('resize', resize);
 
-    const brandingPanel = canvas.parentElement;
-    if (brandingPanel) {
-      brandingPanel.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - rect.left;
-        mouse.y = e.clientY - rect.top;
-        mouse.active = true;
-      });
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      mouse.active = true;
+    });
 
-      brandingPanel.addEventListener('mouseleave', () => {
-        mouse.active = false;
-        mouse.x = -1000;
-        mouse.y = -1000;
-      });
-    }
+    window.addEventListener('mouseleave', () => {
+      mouse.active = false;
+      mouse.x = -1000;
+      mouse.y = -1000;
+    });
 
     // 1. Constellation Nodes
-    const nodeCount = 42;
-    const maxDist = 125;
-    const mouseMaxDist = 160;
+    const nodeCount = 75;
+    const maxDist = 135;
+    const mouseMaxDist = 175;
     const nodes = [];
 
     for (let i = 0; i < nodeCount; i++) {
       nodes.push({
-        x: Math.random() * (width || 450),
-        y: Math.random() * (height || 650),
+        x: Math.random() * (width || window.innerWidth || 1200),
+        y: Math.random() * (height || window.innerHeight || 800),
         vx: (Math.random() - 0.5) * 0.6,
         vy: (Math.random() - 0.5) * 0.6,
         radius: Math.random() * 1.8 + 1.2,
@@ -174,12 +168,12 @@
     }
 
     // 2. Ambient Floating Micro-Sparks
-    const sparkCount = 28;
+    const sparkCount = 45;
     const sparks = [];
     for (let i = 0; i < sparkCount; i++) {
       sparks.push({
-        x: Math.random() * (width || 450),
-        y: Math.random() * (height || 650),
+        x: Math.random() * (width || window.innerWidth || 1200),
+        y: Math.random() * (height || window.innerHeight || 800),
         vy: -0.2 - Math.random() * 0.35,
         vx: (Math.random() - 0.5) * 0.2,
         size: Math.random() * 1.2 + 0.4,

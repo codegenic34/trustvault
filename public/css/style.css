@@ -385,14 +385,18 @@ textarea {
   min-height: 100vh;
   display: flex;
   background-color: var(--bg-base);
+  position: relative;
+  overflow: hidden;
 }
 
 /* Left 45% Branding Panel - Pure Obsidian with Radiant White Accents */
 .branding-panel {
   flex: 0 0 45%;
   position: relative;
-  background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.05) 0%, rgba(10, 14, 23, 0.95) 55%, #050A12 100%);
-  border-right: 1px solid var(--border-color);
+  background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.03) 0%, rgba(10, 14, 23, 0.72) 55%, rgba(5, 10, 18, 0.85) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -402,13 +406,12 @@ textarea {
 }
 
 #nodes-canvas {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   z-index: 0;
-  pointer-events: auto;
-  /* Enables interactive mouse tracking */
+  pointer-events: none;
 }
 
 .branding-header,
@@ -529,8 +532,12 @@ textarea {
   align-items: center;
   justify-content: center;
   padding: 40px 24px;
-  background: radial-gradient(circle at 50% 50%, #080D17 0%, #050A12 100%);
+  background: radial-gradient(circle at 50% 50%, rgba(8, 13, 23, 0.65) 0%, rgba(5, 10, 18, 0.82) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   overflow-y: auto;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-card-wrapper {
@@ -540,12 +547,13 @@ textarea {
 
 .auth-card {
   position: relative;
-  background: var(--surface-1);
-  background: linear-gradient(180deg, #0B101B 0%, #060910 100%);
-  border: 1px solid var(--border-color);
+  background: rgba(11, 16, 27, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
   padding: 34px;
-  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.65), 0 0 30px rgba(255, 255, 255, 0.03);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.75), 0 0 30px rgba(255, 255, 255, 0.04);
   overflow: hidden;
 }
 

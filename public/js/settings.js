@@ -64,10 +64,12 @@ async function loadMe() {
     hdrRole.className = 'role-' + user.role;
   }
 
-  // Admin link in nav
+  // Admin link in nav and User Roles tab in Settings
   if (user.role === 'admin') {
     const navAdmin = document.getElementById('nav-admin');
     if (navAdmin) navAdmin.classList.remove('hidden');
+    const tabRoles = document.getElementById('tab-roles');
+    if (tabRoles) tabRoles.classList.remove('hidden');
   }
 
   // Populate Profile tab fields
@@ -185,6 +187,8 @@ function initTabs() {
 
     if (tabId === 'sessions') {
       loadSessions();
+    } else if (tabId === 'roles') {
+      loadSettingsUsers();
     }
   }
 
@@ -198,7 +202,7 @@ function initTabs() {
 
   // Handle URL hash on load
   const initialHash = window.location.hash.replace('#', '');
-  if (['profile', 'security', 'sessions', 'about'].includes(initialHash)) {
+  if (['profile', 'security', 'sessions', 'about', 'roles'].includes(initialHash)) {
     switchTab(initialHash);
   }
 }
@@ -484,6 +488,193 @@ function initSessionsRevoke() {
   });
 }
 
+// ── User Role Management (Admin) ───────────────────────────────────────────
+async function loadSettingsUsers() {
+  const tbody = document.getElementById('settings-users-tbody');
+  if (!tbody) return;
+  tbody.textContent = '';
+
+  const loadingTr = document.createElement('tr');
+  const loadingTd = document.createElement('td');
+  loadingTd.colSpan = 5;
+  loadingTd.style.textAlign = 'center';
+  loadingTd.style.padding = '24px';
+  loadingTd.style.color = 'var(--text-muted)';
+  loadingTd.textContent = 'Loading user privileges…';
+  loadingTr.appendChild(loadingTd);
+  tbody.appendChild(loadingTr);
+
+  try {
+    const res = await fetch('/api/admin/users', { credentials: 'same-origin' });
+    if (!res.ok) {
+      tbody.textContent = '';
+      const errTr = document.createElement('tr');
+      const errTd = document.createElement('td');
+      errTd.colSpan = 5;
+      errTd.style.textAlign = 'center';
+      errTd.style.padding = '24px';
+      errTd.style.color = '#EF4444';
+      errTd.textContent = 'Failed to load user privileges.';
+      errTr.appendChild(errTd);
+      tbody.appendChild(errTr);
+      return;
+    }
+
+    const { users } = await res.json();
+    tbody.textContent = '';
+
+    if (!users || !users.length) {
+      const emptyTr = document.createElement('tr');
+      const emptyTd = document.createElement('td');
+      emptyTd.colSpan = 5;
+      emptyTd.style.textAlign = 'center';
+      emptyTd.style.padding = '24px';
+      emptyTd.style.color = 'var(--text-muted)';
+      emptyTd.textContent = 'No registered users found.';
+      emptyTr.appendChild(emptyTd);
+      tbody.appendChild(emptyTr);
+      return;
+    }
+
+    users.forEach(u => {
+      const tr = document.createElement('tr');
+
+      // Username
+      const unTd = document.createElement('td');
+      unTd.className = 'font-mono';
+      unTd.style.fontWeight = '600';
+      unTd.style.color = '#FFFFFF';
+      unTd.textContent = u.username;
+      tr.appendChild(unTd);
+
+      // Full Name
+      const fnTd = document.createElement('td');
+      fnTd.textContent = u.full_name || '—';
+      tr.appendChild(fnTd);
+
+      // Email
+      const emTd = document.createElement('td');
+      emTd.style.color = 'var(--text-muted)';
+      emTd.textContent = u.email || '—';
+      tr.appendChild(emTd);
+
+      // Role badge
+      const roleTd = document.createElement('td');
+      const badge = document.createElement('span');
+      if (u.role === 'admin') {
+        badge.className = 'badge-blocked';
+      } else if (u.role === 'owner') {
+        badge.className = 'badge-warning';
+      } else {
+        badge.className = 'badge-viewer';
+      }
+      badge.style.padding = '4px 10px';
+      badge.style.borderRadius = '4px';
+      badge.style.fontSize = '0.75rem';
+      badge.style.fontWeight = '700';
+      badge.textContent = u.role.toUpperCase();
+      roleTd.appendChild(badge);
+      tr.appendChild(roleTd);
+
+      // Action button
+      const actionTd = document.createElement('td');
+      actionTd.style.textAlign = 'right';
+
+      if (u.role === 'viewer') {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-primary';
+        btn.style.padding = '6px 14px';
+        btn.style.fontSize = '0.785rem';
+        btn.style.width = 'auto';
+        btn.style.background = 'linear-gradient(135deg, #D97706 0%, #B45309 100%)';
+        btn.textContent = 'Promote to Owner ⬆';
+        btn.addEventListener('click', () => changeRole(u.id, u.username, 'owner'));
+        actionTd.appendChild(btn);
+      } else if (u.role === 'owner') {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-secondary';
+        btn.style.padding = '6px 14px';
+        btn.style.fontSize = '0.785rem';
+        btn.style.width = 'auto';
+        btn.style.color = '#38BDF8';
+        btn.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+        btn.textContent = 'Change to Viewer ⬇';
+        btn.addEventListener('click', () => changeRole(u.id, u.username, 'viewer'));
+        actionTd.appendChild(btn);
+      } else {
+        const span = document.createElement('span');
+        span.style.fontSize = '0.8rem';
+        span.style.color = 'var(--text-muted)';
+        span.style.fontWeight = '600';
+        span.textContent = 'System Admin';
+        actionTd.appendChild(span);
+      }
+
+      tr.appendChild(actionTd);
+      tbody.appendChild(tr);
+    });
+  } catch {
+    tbody.textContent = '';
+    const errTr = document.createElement('tr');
+    const errTd = document.createElement('td');
+    errTd.colSpan = 5;
+    errTd.style.textAlign = 'center';
+    errTd.style.padding = '24px';
+    errTd.style.color = '#EF4444';
+    errTd.textContent = 'Error connecting to user service.';
+    errTr.appendChild(errTd);
+    tbody.appendChild(errTr);
+  }
+}
+
+function showRolesAlert(msg, isSuccess) {
+  const alertEl = document.getElementById('roles-alert-banner');
+  const alertText = document.getElementById('roles-alert-text');
+  const alertIcon = document.getElementById('roles-alert-icon');
+  if (!alertEl || !alertText) return;
+  alertText.textContent = msg;
+  if (isSuccess) {
+    alertEl.className = 'alert-banner alert-success';
+    if (alertIcon) alertIcon.textContent = '✓';
+  } else {
+    alertEl.className = 'alert-banner alert-danger';
+    if (alertIcon) alertIcon.textContent = '⚠';
+  }
+  alertEl.style.display = 'flex';
+}
+
+async function changeRole(userId, username, newRole) {
+  if (!confirm(`Are you sure you want to change user "${username}" to "${newRole}"?`)) return;
+
+  try {
+    const res = await apiFetch(`/api/admin/users/${userId}/role`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: newRole }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok) {
+      showRolesAlert(`User ${username} role updated to ${newRole.toUpperCase()} successfully.`, true);
+      await loadSettingsUsers();
+    } else {
+      showRolesAlert(data.error || 'Failed to update user role.', false);
+    }
+  } catch {
+    showRolesAlert('Server connection failed.', false);
+  }
+}
+
+function initRolesPanel() {
+  const refreshBtn = document.getElementById('refresh-roles-btn');
+  if (refreshBtn) {
+    refreshBtn.addEventListener('click', loadSettingsUsers);
+  }
+}
+
 // ── Logout ─────────────────────────────────────────────────────────────────
 function initLogout() {
   const btn = document.getElementById('logout-btn');
@@ -503,5 +694,6 @@ function initLogout() {
   initPasswordToggles();
   initSecurityPanel();
   initSessionsRevoke();
+  initRolesPanel();
   initLogout();
 })();
