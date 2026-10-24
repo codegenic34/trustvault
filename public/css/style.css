@@ -927,7 +927,11 @@ textarea {
   border-color: #3B82F6;
   box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
 }
-.demo-btn.demo-viewer .user-name,
+.demo-btn.demo-viewer .user-name {
+  color: #FFFFFF !important;
+  font-weight: 600;
+  text-shadow: none;
+}
 .demo-btn.demo-viewer .role-tag {
   color: #3B82F6 !important;
   font-weight: 800;
@@ -1051,7 +1055,7 @@ textarea {
 .app-user-section {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 16px;
 }
 
 .welcome-box {
@@ -1093,7 +1097,8 @@ textarea {
 
 /* ── Universal Dashboard & Admin Themes ───────────────────────────────────── */
 .dashboard-container,
-.admin-container {
+.admin-container,
+.settings-container {
   max-width: 1280px;
   margin: 0 auto;
   padding: 36px 24px 64px;
@@ -1197,5 +1202,266 @@ textarea {
   .auth-panel {
     flex: 1 0 auto;
     padding: 32px 16px;
+  }
+}
+
+/* ── Settings Page Design ────────────────────────────────────────────────── */
+.settings-layout {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.settings-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(11, 16, 27, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 12px;
+}
+
+.settings-tab-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.settings-tab-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.settings-tab-btn.active {
+  color: #FFFFFF;
+  background: rgba(59, 130, 246, 0.15);
+  border-left: 3px solid #3B82F6;
+  font-weight: 700;
+}
+
+.settings-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-panel {
+  display: none;
+}
+.settings-panel.active {
+  display: block;
+  animation: fadeIn 0.25s ease;
+}
+
+/* Password Input with Show/Hide Toggle */
+.pw-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pw-input-wrapper .form-input {
+  padding-right: 44px;
+}
+
+.pw-toggle-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease;
+}
+
+.pw-toggle-btn:hover {
+  color: #FFFFFF;
+}
+
+/* Requirements Checklist with SVG icons */
+.req-checklist {
+  list-style: none;
+  margin: 14px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.req-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.req-item.met {
+  color: #10B981;
+  font-weight: 500;
+}
+
+.req-icon-svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Password Strength Bar */
+.strength-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 8px;
+  margin-bottom: 6px;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-bar-fill.weak {
+  width: 33%;
+  background-color: #EF4444;
+}
+.strength-bar-fill.medium {
+  width: 66%;
+  background-color: #F59E0B;
+}
+.strength-bar-fill.strong {
+  width: 100%;
+  background-color: #10B981;
+}
+
+.strength-status-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Profile Grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.profile-field {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+}
+
+.profile-label {
+  font-size: 0.725rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.profile-val {
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+/* Sessions Cards */
+.session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  gap: 16px;
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-device {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.session-meta {
+  font-size: 0.785rem;
+  color: var(--text-muted);
+}
+
+.badge-current-session {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-current-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 6px #10B981;
+}
+
+@media (max-width: 768px) {
+  .settings-layout {
+    flex-direction: column;
+  }
+  .settings-sidebar {
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  .settings-tab-btn {
+    white-space: nowrap;
+    border-left: none;
+    border-bottom: 3px solid transparent;
+  }
+  .settings-tab-btn.active {
+    border-left: none;
+    border-bottom: 3px solid #3B82F6;
+  }
+  .profile-grid {
+    grid-template-columns: 1fr;
   }
 }

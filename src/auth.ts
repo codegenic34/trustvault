@@ -6,16 +6,23 @@ import type { SessionUser } from './authorize';
 
 const SESSION_DURATION_MS = 8 * 60 * 60 * 1000; // 8 hours
 
-export function createSession(userId: number): {
+export function createSession(userId: number, userAgent?: string): {
   token: string;
   csrfToken: string;
 } {
   const token = crypto.randomBytes(32).toString('hex');
   const csrfToken = crypto.randomBytes(32).toString('hex');
+  const now = new Date().toISOString();
   const expiresAt = new Date(Date.now() + SESSION_DURATION_MS).toISOString();
-  db.prepare(
-    'INSERT INTO sessions (id, user_id, csrf_token, expires_at) VALUES (?, ?, ?, ?)'
-  ).run(token, userId, csrfToken, expiresAt);
+  try {
+    db.prepare(
+      'INSERT INTO sessions (id, user_id, csrf_token, expires_at, user_agent, last_active) VALUES (?, ?, ?, ?, ?, ?)'
+    ).run(token, userId, csrfToken, expiresAt, userAgent || 'Unknown Device / Browser', now);
+  } catch {
+    db.prepare(
+      'INSERT INTO sessions (id, user_id, csrf_token, expires_at) VALUES (?, ?, ?, ?)'
+    ).run(token, userId, csrfToken, expiresAt);
+  }
   return { token, csrfToken };
 }
 
@@ -89,6 +96,9 @@ export function requireAuth(
     active: row.active,
   };
   req.csrfToken = row.csrf_token;
+  try {
+    db.prepare('UPDATE sessions SET last_active = datetime("now") WHERE id = ?').run(token);
+  } catch {}
   next();
 }
 

@@ -21,7 +21,10 @@ export function initDB(): void {
       password_hash TEXT    NOT NULL,
       role          TEXT    NOT NULL CHECK(role IN ('admin', 'owner', 'viewer')),
       active        INTEGER NOT NULL DEFAULT 1,
-      created_at    TEXT    NOT NULL DEFAULT (datetime('now'))
+      created_at    TEXT    NOT NULL DEFAULT (datetime('now')),
+      full_name     TEXT,
+      email         TEXT,
+      last_login    TEXT
     );
 
     CREATE TABLE IF NOT EXISTS sessions (
@@ -29,7 +32,9 @@ export function initDB(): void {
       user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
       csrf_token  TEXT    NOT NULL,
       expires_at  TEXT    NOT NULL,
-      created_at  TEXT    NOT NULL DEFAULT (datetime('now'))
+      created_at  TEXT    NOT NULL DEFAULT (datetime('now')),
+      user_agent  TEXT,
+      last_active TEXT    NOT NULL DEFAULT (datetime('now'))
     );
 
     CREATE TABLE IF NOT EXISTS documents (
@@ -82,4 +87,11 @@ export function initDB(): void {
       SELECT RAISE(ABORT, 'audit_log is append-only: DELETE not permitted');
     END;
   `);
+
+  // Safe migrations for pre-existing databases
+  try { db.exec('ALTER TABLE users ADD COLUMN full_name TEXT'); } catch {}
+  try { db.exec('ALTER TABLE users ADD COLUMN email TEXT'); } catch {}
+  try { db.exec('ALTER TABLE users ADD COLUMN last_login TEXT'); } catch {}
+  try { db.exec('ALTER TABLE sessions ADD COLUMN user_agent TEXT'); } catch {}
+  try { db.exec('ALTER TABLE sessions ADD COLUMN last_active TEXT'); } catch {}
 }

@@ -50,7 +50,92 @@ Response `200`: `{ "csrfToken": "<64-hex-chars>" }`
 ### `GET /api/me`
 **Who may call:** Any authenticated user
 
-Response `200`: `{ "user": { "id": 1, "username": "owner1", "role": "owner", "active": 1 } }`
+Response `200`:
+```json
+{
+  "user": {
+    "id": 1,
+    "username": "owner1",
+    "role": "owner",
+    "active": 1,
+    "full_name": "Primary Owner",
+    "email": "owner1@trustvault.local",
+    "created_at": "2026-10-24T12:00:00.000Z",
+    "last_login": "2026-10-24T14:30:00.000Z"
+  }
+}
+```
+
+---
+
+### `POST /api/auth/change-password`
+**Who may call:** Any authenticated user (own account only)  
+**Requires:** `X-CSRF-Token` header, rate-limited (5 attempts / 15 min per user)
+
+Request body:
+```json
+{
+  "currentPassword": "Owner1234!",
+  "newPassword": "NewOwnerPass123!",
+  "confirmPassword": "NewOwnerPass123!"
+}
+```
+
+Rules:
+- Validated server-side: 8+ chars, at least one uppercase, lowercase, digit, and special character.
+- `confirmPassword` must match `newPassword`.
+- `newPassword` must differ from `currentPassword`.
+- Current password verified with bcrypt before change.
+- Updates password in a transaction, revokes all other sessions, and rotates the current session ID and cookie.
+- Writes a `PASSWORD_CHANGED` audit entry (or `PASSWORD_CHANGE_FAILED` with outcome `DENY` on incorrect current password or validation failure).
+
+Response `200`:
+```json
+{
+  "message": "Password changed successfully.",
+  "csrfToken": "<new-64-hex-chars>"
+}
+```
+
+Errors: `400` validation failure / wrong current password · `401` not authenticated · `429` rate limit exceeded.
+
+---
+
+### `GET /api/auth/sessions`
+**Who may call:** Any authenticated user (own account only)
+
+Returns all active sessions for the authenticated user. Exposes no secret tokens.
+
+Response `200`:
+```json
+{
+  "sessions": [
+    {
+      "id": "sess_1",
+      "is_current": true,
+      "device": "Google Chrome on Windows",
+      "created_at": "2026-10-24T14:00:00.000Z",
+      "last_active": "2026-10-24T14:35:00.000Z"
+    }
+  ]
+}
+```
+
+---
+
+### `POST /api/auth/sessions/revoke-others`
+**Who may call:** Any authenticated user (own account only)  
+**Requires:** `X-CSRF-Token` header
+
+Revokes all active sessions for the calling user *except* the session making the request. Writes a `SESSIONS_REVOKED` audit log entry.
+
+Response `200`:
+```json
+{
+  "message": "Other sessions signed out successfully.",
+  "count": 2
+}
+```
 
 ---
 

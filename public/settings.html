@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrustVault — Account Settings &amp; Security</title>
+  <meta name="description" content="TrustVault account settings, security controls, and session management." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Shared Design System -->
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body class="dashboard-page">
+
+  <!-- ── Universal App Header (Top Left Logo + Brand + Tagline Underneath) ─────── -->
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="app-brand">
+        <img src="/img/logo.svg" alt="TrustVault Logo" class="brand-logo" />
+        <div class="brand-text-block">
+          <span class="brand-title">TRUSTVAULT</span>
+          <span class="brand-tagline">Secure Document Sharing &amp; Access Management</span>
+        </div>
+      </div>
+
+      <!-- Header Right: Welcome, username + navigation -->
+      <div class="app-user-section">
+        <div class="welcome-box">
+          <span class="welcome-text">Welcome, <strong id="hdr-username" class="welcome-username"></strong></span>
+          <span class="signin-pill">
+            <span class="signin-dot"></span>Signed In (<span id="hdr-role"></span>)
+          </span>
+        </div>
+        <a href="/dashboard.html" id="nav-dashboard" class="btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; padding: 8px 16px; font-size: 0.85rem;">Dashboard</a>
+        <a href="/admin.html" id="nav-admin" class="btn-secondary hidden" style="text-decoration: none; display: inline-flex; align-items: center; padding: 8px 16px; font-size: 0.85rem;">Admin Console</a>
+        <button id="logout-btn" class="btn-secondary">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Main Settings Container ─────────────────────────────────────────────── -->
+  <main class="settings-container">
+    <div class="settings-layout">
+
+      <!-- Left Sidebar (Collapses to top tab bar on mobile) -->
+      <aside class="settings-sidebar" role="tablist" aria-label="Settings Categories">
+        <button type="button" class="settings-tab-btn active" data-tab="profile" role="tab" aria-selected="true" id="tab-profile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Profile</span>
+        </button>
+        <button type="button" class="settings-tab-btn" data-tab="security" role="tab" aria-selected="false" id="tab-security">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>Security</span>
+        </button>
+        <button type="button" class="settings-tab-btn" data-tab="sessions" role="tab" aria-selected="false" id="tab-sessions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <span>Sessions</span>
+        </button>
+        <button type="button" class="settings-tab-btn" data-tab="about" role="tab" aria-selected="false" id="tab-about">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          <span>About</span>
+        </button>
+      </aside>
+
+      <!-- Settings Content Panels -->
+      <section class="settings-content">
+
+        <!-- ── Panel 1: Profile ── -->
+        <div id="panel-profile" class="settings-panel active" role="tabpanel" aria-labelledby="tab-profile">
+          <div class="card">
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF; margin-bottom: 6px;">Account Profile</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">Your identity and zero-trust role assignment within TrustVault.</p>
+
+            <div class="profile-grid">
+              <div class="profile-field">
+                <div class="profile-label">Full Name</div>
+                <div id="prof-fullname" class="profile-val">—</div>
+              </div>
+
+              <div class="profile-field">
+                <div class="profile-label">Username</div>
+                <div id="prof-username" class="profile-val">—</div>
+              </div>
+
+              <div class="profile-field">
+                <div class="profile-label">Email Address</div>
+                <div id="prof-email" class="profile-val">—</div>
+              </div>
+
+              <div class="profile-field">
+                <div class="profile-label">Assigned Role (Read-Only)</div>
+                <div id="prof-role-wrap" style="display: flex; align-items: center; gap: 8px;">
+                  <span id="prof-role-badge" class="badge-neutral" style="padding: 3px 10px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">—</span>
+                </div>
+              </div>
+
+              <div class="profile-field">
+                <div class="profile-label">Account Created</div>
+                <div id="prof-created" class="profile-val">—</div>
+              </div>
+
+              <div class="profile-field">
+                <div class="profile-label">Last Active Login</div>
+                <div id="prof-lastlogin" class="profile-val">—</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Panel 2: Security (Change Password) ── -->
+        <div id="panel-security" class="settings-panel" role="tabpanel" aria-labelledby="tab-security">
+          <div class="card" style="max-width: 680px;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF; margin-bottom: 6px;">Change Password</h2>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">Update your password. Other active sessions will be revoked automatically.</p>
+
+            <!-- Alerts -->
+            <div id="pw-error-banner" class="alert-banner alert-danger" role="alert" style="display: none; margin-bottom: 18px;">
+              <span class="alert-icon">⚠</span>
+              <span id="pw-error-text"></span>
+            </div>
+
+            <div id="pw-success-banner" class="alert-banner alert-success" role="status" style="display: none; margin-bottom: 18px;">
+              <span class="alert-icon">✓</span>
+              <span id="pw-success-text"></span>
+            </div>
+
+            <form id="change-password-form" novalidate>
+              <!-- Current Password -->
+              <div class="form-group">
+                <label for="curr-password" class="form-label">Current Password</label>
+                <div class="pw-input-wrapper">
+                  <input type="password" id="curr-password" name="currentPassword" autocomplete="current-password" required class="form-input" placeholder="Enter current password" />
+                  <button type="button" class="pw-toggle-btn" aria-label="Show password" data-target="curr-password">
+                    <svg class="pw-eye-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- New Password -->
+              <div class="form-group">
+                <label for="new-password" class="form-label">New Password</label>
+                <div class="pw-input-wrapper">
+                  <input type="password" id="new-password" name="newPassword" autocomplete="new-password" required class="form-input" placeholder="Enter new strong password" />
+                  <button type="button" class="pw-toggle-btn" aria-label="Show password" data-target="new-password">
+                    <svg class="pw-eye-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  </button>
+                </div>
+
+                <!-- Strength Meter -->
+                <div class="strength-track">
+                  <div id="strength-bar" class="strength-bar-fill"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+                  <span style="font-size: 0.725rem; color: var(--text-muted);">Password Strength:</span>
+                  <span id="strength-label" class="strength-status-text" style="color: var(--text-muted);">None</span>
+                </div>
+
+                <!-- Requirements Checklist with SVG icons (no emoji!) -->
+                <ul class="req-checklist" aria-label="Password requirements">
+                  <li id="req-len" class="req-item">
+                    <svg class="req-icon-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>Minimum 8 characters</span>
+                  </li>
+                  <li id="req-upper" class="req-item">
+                    <svg class="req-icon-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>At least one uppercase letter (A-Z)</span>
+                  </li>
+                  <li id="req-lower" class="req-item">
+                    <svg class="req-icon-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>At least one lowercase letter (a-z)</span>
+                  </li>
+                  <li id="req-num" class="req-item">
+                    <svg class="req-icon-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>At least one number (0-9)</span>
+                  </li>
+                  <li id="req-special" class="req-item">
+                    <svg class="req-icon-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                    <span>At least one special character (!@#$%^&*...)</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Confirm Password -->
+              <div class="form-group">
+                <label for="conf-password" class="form-label">Confirm New Password</label>
+                <div class="pw-input-wrapper">
+                  <input type="password" id="conf-password" name="confirmPassword" autocomplete="new-password" required class="form-input" placeholder="Re-enter new password" />
+                  <button type="button" class="pw-toggle-btn" aria-label="Show password" data-target="conf-password">
+                    <svg class="pw-eye-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  </button>
+                </div>
+                <div id="match-error" style="color: #EF4444; font-size: 0.775rem; margin-top: 4px; display: none;">Confirm password must match new password</div>
+                <div id="diff-error" style="color: #EF4444; font-size: 0.775rem; margin-top: 4px; display: none;">New password must differ from current password</div>
+              </div>
+
+              <!-- Submit -->
+              <button type="submit" id="btn-change-password" class="btn-primary" disabled style="margin-top: 12px; width: auto; padding: 12px 28px;">
+                Change Password
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- ── Panel 3: Sessions ── -->
+        <div id="panel-sessions" class="settings-panel" role="tabpanel" aria-labelledby="tab-sessions">
+          <div class="card">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 20px;">
+              <div>
+                <h2 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">Active Sessions</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Manage devices and browser sessions authenticated to your account.</p>
+              </div>
+              <button type="button" id="btn-revoke-others" class="btn-secondary" style="font-size: 0.85rem; padding: 8px 18px;">
+                Sign out other sessions
+              </button>
+            </div>
+
+            <!-- Sessions feedback alert -->
+            <div id="session-alert" class="alert-banner alert-success" style="display: none; margin-bottom: 16px;"></div>
+
+            <!-- Sessions List -->
+            <div id="sessions-list">
+              <p style="color: var(--text-muted); font-size: 0.85rem;">Loading active sessions…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Panel 4: About ── -->
+        <div id="panel-about" class="settings-panel" role="tabpanel" aria-labelledby="tab-about">
+          <div class="card">
+            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 20px;">
+              <img src="/img/logo.svg" alt="TrustVault Logo" style="width: 44px; height: 44px;" />
+              <div>
+                <h2 style="font-size: 1.3rem; font-weight: 800; color: #FFFFFF; letter-spacing: 0.1em;">TRUSTVAULT</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">Version 1.0.0 (Security Enterprise Edition)</p>
+              </div>
+            </div>
+
+            <p style="font-size: 0.9rem; color: #E2E8F0; line-height: 1.6; margin-bottom: 20px;">
+              TrustVault is an enterprise-grade document sharing and access control platform engineered with a strict default-deny architecture, per-request authorization verification, and cryptographic hash-chained audit trails.
+            </p>
+
+            <div class="profile-grid">
+              <div class="profile-field">
+                <div class="profile-label">Cryptographic Audit Trail</div>
+                <div class="profile-val" style="font-size: 0.85rem; color: var(--mist);">SHA-256 Append-Only Chain</div>
+              </div>
+              <div class="profile-field">
+                <div class="profile-label">File Storage Isolation</div>
+                <div class="profile-val" style="font-size: 0.85rem; color: var(--mist);">Out-of-Tree UUID Streaming</div>
+              </div>
+              <div class="profile-field">
+                <div class="profile-label">Authorization Engine</div>
+                <div class="profile-val" style="font-size: 0.85rem; color: var(--mist);">Central DB-Enforced Authorize()</div>
+              </div>
+              <div class="profile-field">
+                <div class="profile-label">Session Security</div>
+                <div class="profile-val" style="font-size: 0.85rem; color: var(--mist);">Strict SameSite + HttpOnly Cookies</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <script src="/js/settings.js"></script>
+</body>
+
+</html>
