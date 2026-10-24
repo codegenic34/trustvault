@@ -115,7 +115,7 @@
     });
   }
 
-  // ── Connected Nodes Animated Canvas (Rule 4) ───────────────────────────────
+  // ── Connected Nodes Animated Canvas with Interactive Physics & Sonar (Rule 4) ──
   function setupCanvasAnimation() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -124,6 +124,9 @@
     let width = 0;
     let height = 0;
     let animationFrameId = null;
+
+    // Mouse tracking for interactive constellation attraction
+    const mouse = { x: -1000, y: -1000, active: false };
 
     function resize() {
       const parent = canvas.parentElement;
@@ -135,21 +138,60 @@
     resize();
     window.addEventListener('resize', resize);
 
-    const nodeCount = 38;
-    const maxDist = 110;
+    const brandingPanel = canvas.parentElement;
+    if (brandingPanel) {
+      brandingPanel.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+        mouse.active = true;
+      });
+
+      brandingPanel.addEventListener('mouseleave', () => {
+        mouse.active = false;
+        mouse.x = -1000;
+        mouse.y = -1000;
+      });
+    }
+
+    // 1. Constellation Nodes
+    const nodeCount = 42;
+    const maxDist = 125;
+    const mouseMaxDist = 160;
     const nodes = [];
 
     for (let i = 0; i < nodeCount; i++) {
       nodes.push({
-        x: Math.random() * (width || 400),
-        y: Math.random() * (height || 600),
-        vx: (Math.random() - 0.5) * 0.55,
-        vy: (Math.random() - 0.5) * 0.55,
-        radius: Math.random() * 1.5 + 1.2,
+        x: Math.random() * (width || 450),
+        y: Math.random() * (height || 650),
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        radius: Math.random() * 1.8 + 1.2,
+        baseColor: i % 5 === 0 ? '#DCAE1D' : (i % 2 === 0 ? '#FFFFFF' : '#CAE4DB'),
+        pulse: Math.random() * Math.PI,
+        flash: 0,
       });
     }
 
-    function render() {
+    // 2. Ambient Floating Micro-Sparks
+    const sparkCount = 28;
+    const sparks = [];
+    for (let i = 0; i < sparkCount; i++) {
+      sparks.push({
+        x: Math.random() * (width || 450),
+        y: Math.random() * (height || 650),
+        vy: -0.2 - Math.random() * 0.35,
+        vx: (Math.random() - 0.5) * 0.2,
+        size: Math.random() * 1.2 + 0.4,
+        alpha: Math.random() * 0.5 + 0.2,
+      });
+    }
+
+    // 3. Vault Sonar Waves
+    const sonarRings = [];
+    let lastRingTime = performance.now();
+
+    function render(currentTime) {
       if (width === 0 || height === 0) {
         animationFrameId = requestAnimationFrame(render);
         return;
@@ -157,18 +199,90 @@
 
       ctx.clearRect(0, 0, width, height);
 
-      // Update positions
+      // Periodically trigger a Sonar Wave
+      if (currentTime - lastRingTime > 4000) {
+        lastRingTime = currentTime;
+        sonarRings.push({
+          x: width * 0.5,
+          y: height * 0.45,
+          radius: 10,
+          maxRadius: Math.max(width, height) * 0.9,
+          alpha: 0.4,
+        });
+      }
+
+      // Draw and expand sonar waves
+      for (let i = sonarRings.length - 1; i >= 0; i--) {
+        const ring = sonarRings[i];
+        ring.radius += 1.8;
+        ring.alpha *= 0.985;
+
+        ctx.beginPath();
+        ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${ring.alpha * 0.35})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Illuminate nodes hit by sonar wave
+        for (let j = 0; j < nodes.length; j++) {
+          const n = nodes[j];
+          const distToCenter = Math.hypot(n.x - ring.x, n.y - ring.y);
+          if (Math.abs(distToCenter - ring.radius) < 15) {
+            n.flash = 1.0;
+          }
+        }
+
+        if (ring.radius >= ring.maxRadius || ring.alpha < 0.01) {
+          sonarRings.splice(i, 1);
+        }
+      }
+
+      // Render Ambient Micro-Sparks
+      for (let i = 0; i < sparks.length; i++) {
+        const sp = sparks[i];
+        sp.y += sp.vy;
+        sp.x += sp.vx;
+
+        if (sp.y < 0) {
+          sp.y = height + 5;
+          sp.x = Math.random() * width;
+        }
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${sp.alpha * 0.4})`;
+        ctx.beginPath();
+        ctx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Update Node Positions & Interactive Mouse Spring
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
+        n.pulse += 0.03;
+        if (n.flash > 0) n.flash -= 0.02;
+
         n.x += n.vx;
         n.y += n.vy;
 
+        // Bounce off canvas boundaries
         if (n.x <= 0 || n.x >= width) n.vx *= -1;
         if (n.y <= 0 || n.y >= height) n.vy *= -1;
+
+        // Gentle interactive attraction toward cursor
+        if (mouse.active) {
+          const dx = mouse.x - n.x;
+          const dy = mouse.y - n.y;
+          const dist = Math.hypot(dx, dy);
+
+          if (dist < mouseMaxDist) {
+            const force = (1 - dist / mouseMaxDist) * 0.4;
+            n.x += (dx / dist) * force;
+            n.y += (dy / dist) * force;
+          }
+        }
       }
 
-      // Draw lines
-      ctx.lineWidth = 0.8;
+      // Draw Inter-Node Constellation Lines
+      ctx.lineWidth = 0.85;
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x;
@@ -176,8 +290,8 @@
           const dist = Math.hypot(dx, dy);
 
           if (dist < maxDist) {
-            const alpha = (1 - dist / maxDist) * 0.22;
-            ctx.strokeStyle = `rgba(202, 228, 219, ${alpha})`;
+            const alpha = (1 - dist / maxDist) * 0.28;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
             ctx.beginPath();
             ctx.moveTo(nodes[i].x, nodes[i].y);
             ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -186,26 +300,61 @@
         }
       }
 
-      // Draw nodes
+      // Draw Interactive Mouse Connection Lines
+      if (mouse.active) {
+        for (let i = 0; i < nodes.length; i++) {
+          const n = nodes[i];
+          const dx = mouse.x - n.x;
+          const dy = mouse.y - n.y;
+          const dist = Math.hypot(dx, dy);
+
+          if (dist < mouseMaxDist) {
+            const alpha = (1 - dist / mouseMaxDist) * 0.55;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${alpha})`;
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw Glowing Nodes
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
-        ctx.fillStyle = i % 4 === 0 ? 'rgba(220, 174, 29, 0.7)' : 'rgba(122, 157, 150, 0.75)';
+        const pulseFactor = 0.85 + Math.sin(n.pulse) * 0.2;
+        const currentRadius = n.radius * pulseFactor;
+
+        // Radiant glow
+        if (n.flash > 0) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, currentRadius * 3, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 255, 255, ${n.flash * 0.5})`;
+          ctx.fill();
+        }
+
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, currentRadius, 0, Math.PI * 2);
+        ctx.fillStyle = n.flash > 0 ? '#FFFFFF' : n.baseColor;
+        ctx.shadowColor = '#FFFFFF';
+        ctx.shadowBlur = 6;
         ctx.fill();
+        ctx.shadowBlur = 0; // reset
       }
 
       animationFrameId = requestAnimationFrame(render);
     }
 
-    render();
+    animationFrameId = requestAnimationFrame(render);
 
-    // Pause when tab is inactive to preserve resources
+    // Pause when tab is inactive to preserve CPU
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
       } else {
-        render();
+        lastRingTime = performance.now();
+        animationFrameId = requestAnimationFrame(render);
       }
     });
   }

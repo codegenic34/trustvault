@@ -3,122 +3,114 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TrustVault — Admin Audit Console</title>
-  <meta name="description" content="TrustVault admin panel — cryptographic audit log and system monitoring" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-  <!-- Inter Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-
-  <!-- Shared Design System -->
-  <link rel="stylesheet" href="/css/style.css" />
+  <title>TrustVault — Admin</title>
+  <meta name="description" content="TrustVault admin panel — audit log and system monitoring" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .admin-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 32px 20px 60px;
-    }
-    .filter-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
+    body { font-family: ui-sans-serif, system-ui, sans-serif; }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(4px);} to {opacity:1;transform:none;} }
+    .log-DENY  { background: rgba(239,68,68,0.07); }
+    .log-ALLOW { background: rgba(34,197,94,0.04); }
   </style>
 </head>
-<body>
+<body class="bg-gray-950 text-gray-200 min-h-screen">
 
 <!-- Header -->
-<header class="app-header">
-  <div class="app-header-inner" style="max-width: 1280px;">
-    <div class="app-brand">
-      <img src="/img/logo.svg" alt="TrustVault Logo" style="width: 30px; height: 30px;" />
-      <span style="font-weight: 700; font-size: 1.15rem; letter-spacing: 0.08em; text-transform: uppercase;">TrustVault</span>
-      <span class="badge badge-blocked" style="margin-left: 8px;">ADMIN</span>
+<header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-30">
+  <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">🔐</span>
+      <span class="font-bold text-white text-lg">TrustVault</span>
+      <span class="ml-2 px-2 py-0.5 rounded text-xs bg-red-900 text-red-300 font-medium">ADMIN</span>
     </div>
-    <div class="app-nav">
-      <a href="/dashboard.html" style="font-size: 0.85rem; color: var(--morning-sky);">Dashboard</a>
-      <button id="logout-btn" class="btn-secondary">Sign out</button>
+    <div class="flex items-center gap-4">
+      <a href="/dashboard.html" class="text-sm text-gray-400 hover:text-white transition-colors">Dashboard</a>
+      <button id="logout-btn"
+        class="text-sm px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">Sign out</button>
     </div>
   </div>
 </header>
 
-<main class="admin-container">
+<main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
 
   <!-- Chain verify banner -->
-  <div id="chain-banner" style="display: none; padding: 14px 18px; border-radius: var(--radius-md); font-size: 0.9rem; font-weight: 500; margin-bottom: 28px;"></div>
+  <div id="chain-banner" class="hidden p-4 rounded-xl border text-sm font-medium"></div>
 
   <!-- Suspicious items section -->
-  <section style="margin-bottom: 36px;">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-      <h2 style="font-size: 1.15rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
-        <span style="color: var(--accent-honey);">⚠</span> Suspicious Activity
-      </h2>
-      <button id="refresh-suspicious-btn" class="btn-secondary">Refresh</button>
+  <section>
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-white">⚠ Suspicious Activity</h2>
+      <button id="refresh-suspicious-btn"
+        class="text-sm px-3 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">Refresh</button>
     </div>
-    <div id="suspicious-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-      <p style="color: var(--text-muted); font-size: 0.85rem;">Loading…</p>
+    <div id="suspicious-container" class="grid md:grid-cols-3 gap-4">
+      <p class="text-gray-500 text-sm col-span-3">Loading…</p>
     </div>
   </section>
 
   <!-- Audit log section -->
   <section>
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px;">
-      <h2 style="font-size: 1.15rem; font-weight: 600; color: var(--text-main);">Audit Log</h2>
-      <div class="filter-bar">
-        <select id="filter-outcome" class="form-input" style="width: 140px; padding: 8px 12px;">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+      <h2 class="text-lg font-semibold text-white">Audit Log</h2>
+      <div class="flex flex-wrap gap-2 items-center">
+        <select id="filter-outcome"
+          class="px-3 py-1.5 text-sm bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none">
           <option value="">All outcomes</option>
           <option value="ALLOW">ALLOW</option>
           <option value="DENY">DENY</option>
         </select>
-        <input type="text" id="filter-action" placeholder="Action…" maxlength="50" class="form-input" style="width: 130px; padding: 8px 12px;" />
-        <input type="text" id="filter-actor" placeholder="Actor ID…" maxlength="10" class="form-input" style="width: 110px; padding: 8px 12px;" />
-        <button id="audit-search-btn" class="btn-secondary">Filter</button>
-        <button id="verify-btn" class="btn-primary" style="width: auto; padding: 8px 16px; font-size: 0.825rem;">
+        <input type="text" id="filter-action" placeholder="Action…" maxlength="50"
+          class="w-32 px-3 py-1.5 text-sm bg-gray-800 border border-gray-700 rounded-lg text-white
+                 placeholder-gray-500 focus:outline-none" />
+        <input type="text" id="filter-actor" placeholder="Actor ID…" maxlength="10"
+          class="w-28 px-3 py-1.5 text-sm bg-gray-800 border border-gray-700 rounded-lg text-white
+                 placeholder-gray-500 focus:outline-none" />
+        <button id="audit-search-btn"
+          class="px-3 py-1.5 text-sm bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">Filter</button>
+        <button id="verify-btn"
+          class="px-3 py-1.5 text-sm bg-purple-700 hover:bg-purple-600 rounded-lg transition-colors font-medium">
           🔗 Verify Chain
         </button>
       </div>
     </div>
 
     <!-- Table -->
-    <div class="card" style="padding: 0; overflow: hidden;">
-      <div class="data-table-wrap" style="border: none; border-radius: 0;">
-        <table class="data-table">
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
           <thead>
-            <tr>
-              <th style="width: 40px;">#</th>
-              <th>Timestamp</th>
-              <th>Actor</th>
-              <th>Action</th>
-              <th>Outcome</th>
-              <th>Reason</th>
-              <th>Detail</th>
-              <th>Resource</th>
+            <tr class="border-b border-gray-800 text-xs text-gray-400 uppercase tracking-wide">
+              <th class="px-4 py-3 text-left w-8">#</th>
+              <th class="px-4 py-3 text-left">Timestamp</th>
+              <th class="px-4 py-3 text-left">Actor</th>
+              <th class="px-4 py-3 text-left">Action</th>
+              <th class="px-4 py-3 text-left">Outcome</th>
+              <th class="px-4 py-3 text-left">Reason</th>
+              <th class="px-4 py-3 text-left">Detail</th>
+              <th class="px-4 py-3 text-left">Resource</th>
             </tr>
           </thead>
           <tbody id="audit-tbody">
-            <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading…</td></tr>
+            <tr><td colspan="8" class="px-4 py-6 text-center text-gray-500">Loading…</td></tr>
           </tbody>
         </table>
       </div>
 
       <!-- Pagination -->
-      <div style="padding: 14px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
+      <div class="px-4 py-3 border-t border-gray-800 flex items-center justify-between text-sm text-gray-400">
         <span id="page-info"></span>
-        <div style="display: flex; gap: 8px;">
-          <button id="prev-btn" class="btn-secondary" disabled>← Prev</button>
-          <button id="next-btn" class="btn-secondary" disabled>Next →</button>
+        <div class="flex gap-2">
+          <button id="prev-btn"
+            class="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 disabled:opacity-40 transition-colors"
+            disabled>← Prev</button>
+          <button id="next-btn"
+            class="px-3 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 disabled:opacity-40 transition-colors"
+            disabled>Next →</button>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- Footer (Rule 8) -->
-  <footer class="auth-footer" style="margin-top: 60px;">
-    TrustVault, Secure Document Sharing &amp; Access Management, &copy; 2026 TrustVault
-  </footer>
 
 </main>
 

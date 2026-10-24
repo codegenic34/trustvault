@@ -139,9 +139,9 @@ function buildDocCard(doc) {
   // Badges
   const badges = document.createElement('div');
   badges.className = 'flex gap-2 mt-2';
-  if (doc.is_owner) addBadge(badges, 'owner', 'badge badge-warning');
-  if (doc.can_read && !doc.is_owner) addBadge(badges, 'read', 'badge badge-allowed');
-  if (doc.can_edit && !doc.is_owner) addBadge(badges, 'edit', 'badge badge-neutral');
+  if (doc.is_owner) addBadge(badges, 'owner', 'bg-purple-900 text-purple-300');
+  if (doc.can_read && !doc.is_owner) addBadge(badges, 'read', 'bg-blue-900 text-blue-300');
+  if (doc.can_edit && !doc.is_owner) addBadge(badges, 'edit', 'bg-yellow-900 text-yellow-300');
   info.appendChild(badges);
 
   card.appendChild(info);
@@ -186,7 +186,7 @@ function buildDocCard(doc) {
 
 function addBadge(parent, label, classes) {
   const span = document.createElement('span');
-  span.className = classes;
+  span.className = 'text-xs px-2 py-0.5 rounded-full ' + classes;
   span.textContent = label; // safe
   parent.appendChild(span);
 }
