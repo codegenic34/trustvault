@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrustVault — Sign In</title>
+  <meta name="description" content="TrustVault secure document sharing — sign in to your account" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+    .fade-in { animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+
+  <div class="w-full max-w-sm fade-in">
+    <!-- Logo / heading -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 mb-4 text-3xl">🔐</div>
+      <h1 class="text-3xl font-bold text-white tracking-tight">TrustVault</h1>
+      <p class="text-gray-400 text-sm mt-1">Secure document sharing</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl">
+      <!-- Error banner -->
+      <div
+        id="error-banner"
+        role="alert"
+        class="hidden mb-5 flex items-start gap-3 p-3 rounded-lg bg-red-950 border border-red-700 text-red-300 text-sm"
+      >
+        <span class="mt-0.5">⚠</span>
+        <span id="error-text"></span>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="mb-4">
+          <label for="username" class="block text-sm font-medium text-gray-300 mb-1.5">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            autocomplete="username"
+            required
+            spellcheck="false"
+            class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white
+                   placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500
+                   focus:border-transparent transition"
+            placeholder="your_username"
+          />
+        </div>
+
+        <div class="mb-6">
+          <label for="password" class="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            required
+            class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white
+                   placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500
+                   focus:border-transparent transition"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <button
+          type="submit"
+          id="submit-btn"
+          class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-500 disabled:opacity-50
+                 disabled:cursor-not-allowed text-white font-semibold rounded-xl
+                 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >
+          Sign In
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-xs text-gray-600 mt-6">TrustVault &copy; 2024 — Secure by design</p>
+  </div>
+
+  <script src="/js/login.js"></script>
+</body>
+</html>
