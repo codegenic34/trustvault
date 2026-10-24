@@ -77,8 +77,8 @@ async function loadMe() {
   if (unInput) unInput.value = user.username;
   const emInput = document.getElementById('prof-email-input');
   if (emInput) emInput.value = user.email || `${user.username}@trustvault.local`;
-  const llInput = document.getElementById('prof-lastlogin-input');
-  if (llInput) llInput.value = formatDate(user.last_login);
+  const llEl = document.getElementById('prof-lastlogin');
+  if (llEl) llEl.textContent = formatDate(user.last_login);
   const crEl = document.getElementById('prof-created');
   if (crEl) crEl.textContent = formatDate(user.created_at);
 
@@ -104,7 +104,6 @@ function initProfilePanel() {
   const fnInput = document.getElementById('prof-fullname-input');
   const unInput = document.getElementById('prof-username-input');
   const emInput = document.getElementById('prof-email-input');
-  const llInput = document.getElementById('prof-lastlogin-input');
 
   if (!saveBtn) return;
 
@@ -128,7 +127,6 @@ function initProfilePanel() {
     const username = unInput ? unInput.value.trim() : '';
     const fullName = fnInput ? fnInput.value.trim() : '';
     const email = emInput ? emInput.value.trim() : '';
-    const lastLogin = llInput ? llInput.value.trim() : '';
 
     if (!username) {
       showAlert('Username cannot be empty.', false);
@@ -142,7 +140,7 @@ function initProfilePanel() {
       const res = await apiFetch('/api/auth/profile', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, username, email, lastLogin }),
+        body: JSON.stringify({ fullName, username, email }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -155,7 +153,6 @@ function initProfilePanel() {
           currentUser.username = username;
           currentUser.full_name = fullName;
           currentUser.email = email;
-          currentUser.last_login = lastLogin;
         }
       } else {
         showAlert(data.error || 'Unable to update profile. Please check your inputs.', false);

@@ -3,7 +3,8 @@ import { z } from 'zod';
 import type { SQLInputValue } from 'node:sqlite';
 import { db } from '../db';
 import { requireAuth, requireAdmin } from '../auth';
-import { verifyAuditChain } from '../audit';
+import { verifyAuditChain, writeAudit } from '../audit';
+import { verifyCsrf } from '../middleware/security';
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
@@ -118,4 +119,69 @@ router.get('/suspicious', (_req: Request, res: Response) => {
   res.json({ repeatedDenials, postRevocation, disabledAttempts });
 });
 
+// ── GET /users ─ List all users for admin management ────────────────────────
+router.get('/users', (_req: Request, res: Response) => {
+  const users = db.prepare(`
+    SELECT id, username, role, active, created_at, full_name, email, last_login
+    FROM users
+    ORDER BY id ASC
+  `).all();
+  res.json({ users });
+});
+
+const ChangeRoleSchema = z.object({
+  role: z.enum(['owner', 'viewer']),
+});
+
+// ── POST /users/:id/role ─ Switch between viewer and owner (admin only) ──────
+router.post('/users/:id/role', verifyCsrf, (req: Request, res: Response) => {
+  const userId = parseInt(req.params.id, 10);
+  if (isNaN(userId)) {
+    res.status(400).json({ error: 'Invalid user ID' });
+    return;
+  }
+
+  const parsed = ChangeRoleSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: 'Role must be either "owner" or "viewer"' });
+    return;
+  }
+
+  const { role } = parsed.data;
+
+  const target = db
+    .prepare('SELECT id, username, role FROM users WHERE id = ?')
+    .get(userId) as { id: number; username: string; role: string } | undefined;
+
+  if (!target) {
+    res.status(404).json({ error: 'User not found' });
+    return;
+  }
+
+  if (target.role === 'admin') {
+    res.status(400).json({ error: 'Cannot change administrator role' });
+    return;
+  }
+
+  if (target.role === role) {
+    res.json({ message: `User is already an ${role}`, user: target });
+    return;
+  }
+
+  db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, userId);
+
+  writeAudit({
+    actor_id: req.user!.id,
+    action: 'ROLE_CHANGED',
+    outcome: 'ALLOW',
+    detail: `Admin changed role of user ${target.username} from ${target.role} to ${role}`,
+  });
+
+  res.json({
+    message: `User ${target.username} role updated to ${role} successfully.`,
+    user: { id: target.id, username: target.username, role },
+  });
+});
+
 export default router;
+

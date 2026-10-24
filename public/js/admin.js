@@ -258,6 +258,129 @@ function buildSuspiciousCard(title, items, labelFn, borderClass) {
 
 document.getElementById('refresh-suspicious-btn').addEventListener('click', loadSuspicious);
 
+// ── User Role Management (Switch Viewer to Owner & Owner to Viewer) ─────────
+
+function showRoleBanner(msg, isSuccess) {
+  const banner = document.getElementById('role-alert-banner');
+  if (!banner) return;
+  banner.textContent = msg;
+  banner.classList.remove('hidden', 'alert-danger', 'alert-success');
+  banner.classList.add(isSuccess ? 'alert-success' : 'alert-danger');
+  setTimeout(() => { banner.classList.add('hidden'); }, 5000);
+}
+
+async function loadUsers() {
+  const tbody = document.getElementById('users-tbody');
+  if (!tbody) return;
+
+  const r = await fetch('/api/admin/users', { credentials: 'same-origin' });
+  if (!r.ok) {
+    tbody.textContent = '';
+    const tr = document.createElement('tr');
+    const tdEl = document.createElement('td');
+    tdEl.colSpan = 6;
+    tdEl.className = 'px-4 py-4 text-center text-red-400 text-xs';
+    tdEl.textContent = 'Failed to load users list.';
+    tr.appendChild(tdEl);
+    tbody.appendChild(tr);
+    return;
+  }
+
+  const { users } = await r.json();
+  tbody.textContent = '';
+
+  if (!users || !users.length) {
+    const tr = document.createElement('tr');
+    const tdEl = document.createElement('td');
+    tdEl.colSpan = 6;
+    tdEl.className = 'px-4 py-4 text-center text-gray-500 text-xs';
+    tdEl.textContent = 'No registered users found.';
+    tr.appendChild(tdEl);
+    tbody.appendChild(tr);
+    return;
+  }
+
+  users.forEach(u => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-t border-gray-800/50 hover:bg-gray-800/30 transition-colors';
+
+    tr.appendChild(td(u.id, 'text-gray-500 text-xs'));
+    tr.appendChild(td(u.username, 'font-medium text-white text-xs'));
+    tr.appendChild(td(u.full_name || '—', 'text-gray-300 text-xs'));
+    tr.appendChild(td(u.email || '—', 'text-gray-400 text-xs'));
+
+    // Role badge
+    const roleTd = document.createElement('td');
+    roleTd.className = 'px-4 py-2.5 text-xs';
+    const badge = document.createElement('span');
+    if (u.role === 'admin') {
+      badge.className = 'px-2 py-0.5 rounded-full bg-red-950 text-red-300 border border-red-800 font-bold';
+    } else if (u.role === 'owner') {
+      badge.className = 'px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 border border-amber-800 font-bold';
+    } else {
+      badge.className = 'px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-800 font-bold';
+    }
+    badge.textContent = u.role.toUpperCase();
+    roleTd.appendChild(badge);
+    tr.appendChild(roleTd);
+
+    // Action button
+    const actionTd = document.createElement('td');
+    actionTd.className = 'px-4 py-2.5 text-xs text-right';
+
+    if (u.role === 'viewer') {
+      const btn = document.createElement('button');
+      btn.className = 'px-3 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs transition-colors shadow-sm';
+      btn.textContent = 'Promote to Owner ⬆';
+      btn.addEventListener('click', () => changeUserRole(u.id, u.username, 'owner'));
+      actionTd.appendChild(btn);
+    } else if (u.role === 'owner') {
+      const btn = document.createElement('button');
+      btn.className = 'px-3 py-1 rounded bg-emerald-700 hover:bg-emerald-600 text-white font-semibold text-xs transition-colors shadow-sm';
+      btn.textContent = 'Change to Viewer ⬇';
+      btn.addEventListener('click', () => changeUserRole(u.id, u.username, 'viewer'));
+      actionTd.appendChild(btn);
+    } else {
+      const span = document.createElement('span');
+      span.className = 'text-xs text-gray-500 font-semibold';
+      span.textContent = 'System Admin';
+      actionTd.appendChild(span);
+    }
+
+    tr.appendChild(actionTd);
+    tbody.appendChild(tr);
+  });
+}
+
+async function changeUserRole(userId, username, newRole) {
+  if (!confirm(`Are you sure you want to change user "${username}" to "${newRole}"?`)) return;
+
+  try {
+    const res = await apiFetch(`/api/admin/users/${userId}/role`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role: newRole }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (res.ok) {
+      showRoleBanner(`User ${username} role updated to ${newRole.toUpperCase()} successfully.`, true);
+      await loadUsers();
+      await loadAudit();
+    } else {
+      showRoleBanner(data.error || 'Failed to update user role.', false);
+    }
+  } catch {
+    showRoleBanner('Server connection failed.', false);
+  }
+}
+
+const refreshUsersBtn = document.getElementById('refresh-users-btn');
+if (refreshUsersBtn) {
+  refreshUsersBtn.addEventListener('click', loadUsers);
+}
+
 // ── Logout ─────────────────────────────────────────────────────────────────
 
 document.getElementById('logout-btn').addEventListener('click', async () => {
@@ -275,6 +398,8 @@ document.getElementById('logout-btn').addEventListener('click', async () => {
 
 (async function init() {
   if (!(await guardAdmin())) return;
+  loadUsers();
   loadAudit();
   loadSuspicious();
 }());
+

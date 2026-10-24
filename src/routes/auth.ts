@@ -249,7 +249,6 @@ const UpdateProfileSchema = z.object({
   fullName: z.string().max(100).optional(),
   username: z.string().min(2).max(64).regex(/^[a-zA-Z0-9_.-]+$/),
   email: z.string().email().max(100).or(z.literal('')).optional(),
-  lastLogin: z.string().max(100).optional(),
 });
 
 router.post('/auth/profile', requireAuth, verifyCsrf, async (req: Request, res: Response) => {
@@ -260,7 +259,7 @@ router.post('/auth/profile', requireAuth, verifyCsrf, async (req: Request, res: 
     return;
   }
 
-  const { fullName, username, email, lastLogin } = parsed.data;
+  const { fullName, username, email } = parsed.data;
 
   // Check if username is taken by another user
   const existing = db
@@ -277,14 +276,12 @@ router.post('/auth/profile', requireAuth, verifyCsrf, async (req: Request, res: 
       `UPDATE users 
        SET username = ?, 
            email = ?, 
-           full_name = ?, 
-           last_login = COALESCE(?, last_login) 
+           full_name = ? 
        WHERE id = ?`
     ).run(
       username,
       email || null,
       fullName || null,
-      lastLogin || null,
       req.user!.id
     );
 
@@ -303,7 +300,6 @@ router.post('/auth/profile', requireAuth, verifyCsrf, async (req: Request, res: 
         role: req.user!.role,
         full_name: fullName,
         email,
-        last_login: lastLogin,
       },
     });
   } catch (err) {

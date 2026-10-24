@@ -928,9 +928,9 @@ textarea {
   box-shadow: 0 4px 16px rgba(74, 222, 128, 0.3);
 }
 .demo-btn.demo-viewer .user-name {
-  color: #4ADE80 !important;
+  color: #FFFFFF !important;
   font-weight: 700;
-  text-shadow: 0 0 8px rgba(74, 222, 128, 0.35);
+  text-shadow: none;
 }
 .demo-btn.demo-viewer .role-tag {
   color: #86EFAC !important;

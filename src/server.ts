@@ -55,6 +55,7 @@ app.use('/api/documents', documentRoutes);
 app.use('/api/documents/:id/permissions', permissionRoutes);
 
 app.use('/api/audit', adminRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ── SPA fallback (non-API routes serve index.html) ───────────────────────────
 app.get(/^(?!\/api).*$/, (_req, res) => {
