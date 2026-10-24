@@ -69,6 +69,10 @@ async function loadMe() {
   // textContent — never innerHTML
   setTextById('hdr-username', user.username);
   setTextById('hdr-role', user.role);
+  const hdrRoleEl = document.getElementById('hdr-role');
+  if (hdrRoleEl) {
+    hdrRoleEl.className = 'role-' + user.role;
+  }
 
   if (user.role === 'owner') {
     document.getElementById('upload-section').classList.remove('hidden');

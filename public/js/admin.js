@@ -3,8 +3,8 @@
 'use strict';
 
 let csrfToken = sessionStorage.getItem('csrfToken');
-let page      = 0;
-const LIMIT   = 50;
+let page = 0;
+const LIMIT = 50;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -54,13 +54,13 @@ async function guardAdmin() {
 // ── Audit log ──────────────────────────────────────────────────────────────
 
 async function loadAudit() {
-  const outcome  = document.getElementById('filter-outcome').value;
-  const action   = document.getElementById('filter-action').value.trim();
+  const outcome = document.getElementById('filter-outcome').value;
+  const action = document.getElementById('filter-action').value.trim();
   const actor_id = document.getElementById('filter-actor').value.trim();
 
   const qs = new URLSearchParams({ limit: LIMIT, offset: page * LIMIT });
-  if (outcome)  qs.set('outcome',  outcome);
-  if (action)   qs.set('action',   action);
+  if (outcome) qs.set('outcome', outcome);
+  if (action) qs.set('action', action);
   if (actor_id) qs.set('actor_id', actor_id);
 
   const r = await fetch(`/api/audit?${qs}`, { credentials: 'same-origin' });
@@ -124,8 +124,8 @@ async function loadAudit() {
 
   // Pagination info
   const start = page * LIMIT + 1;
-  const end   = Math.min(start + logs.length - 1, total);
-  const info  = document.getElementById('page-info');
+  const end = Math.min(start + logs.length - 1, total);
+  const info = document.getElementById('page-info');
   info.textContent = total
     ? `Showing ${start}–${end} of ${total} entries`
     : 'No entries';
@@ -155,7 +155,7 @@ document.getElementById('verify-btn').addEventListener('click', async () => {
   const d = await r.json();
   const banner = document.getElementById('chain-banner');
   banner.classList.remove('hidden', 'bg-green-950', 'border-green-700', 'text-green-300',
-                                    'bg-red-950', 'border-red-700', 'text-red-300');
+    'bg-red-950', 'border-red-700', 'text-red-300');
 
   if (d.valid) {
     banner.className = 'p-4 rounded-xl border text-sm font-medium bg-green-950 border-green-700 text-green-300';
@@ -193,7 +193,7 @@ async function loadSuspicious() {
   container.appendChild(buildSuspiciousCard(
     '🔒 Post-Revocation Attempts',
     postRevocation,
-    (item) => `${item.actor_username || ('ID:' + item.actor_id)} → ${item.resource_id?.slice(0,8) + '…'}`,
+    (item) => `${item.actor_username || ('ID:' + item.actor_id)} → ${item.resource_id?.slice(0, 8) + '…'}`,
     'border-yellow-800'
   ));
 
@@ -207,7 +207,7 @@ async function loadSuspicious() {
 
 function buildSuspiciousCard(title, items, labelFn, borderClass) {
   const card = document.createElement('div');
-  card.className = `bg-gray-900 border ${borderClass} rounded-2xl p-4 fade-in`;
+  card.className = `bg-gray-900 border ${borderClass} rounded-2xl p-4 fade-in flex flex-col justify-start h-full`;
 
   const heading = document.createElement('h3');
   heading.className = 'text-sm font-semibold text-white mb-3';

@@ -1,10 +1,13 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TrustVault — Admin Audit Console</title>
-  <meta name="description" content="TrustVault admin panel — cryptographic audit log and system monitoring" />
+  <title>TrustVault — Admin Audit &amp; Security Console</title>
+  <meta name="description" content="TrustVault admin panel — audit log and system monitoring" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
   <!-- Inter Font -->
@@ -14,82 +17,93 @@
 
   <!-- Shared Design System -->
   <link rel="stylesheet" href="/css/style.css" />
+
+  <!-- Tailwind for utility support in admin tables & cards -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .log-DENY {
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    .log-ALLOW {
+      background: rgba(34, 197, 94, 0.04);
+    }
+  </style>
 </head>
-<body class="admin-page">
 
-<!-- ── Header (Top Left Logo + Brand + Tagline Underneath) ─────────────────── -->
-<header class="app-header">
-  <div class="app-header-inner">
-    <div class="app-brand">
-      <img src="/img/logo.svg" alt="TrustVault Logo" class="brand-logo" />
-      <div class="brand-text-block">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span class="brand-title">TrustVault</span>
-          <span class="badge badge-blocked" style="font-size: 0.65rem; padding: 2px 6px;">ADMIN</span>
+<body class="dashboard-page">
+
+  <!-- ── App Header (Top Left Logo + Brand + Tagline Underneath) ─────────────── -->
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="app-brand">
+        <img src="/img/logo.svg" alt="TrustVault Logo" class="brand-logo" />
+        <div class="brand-text-block">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="brand-title">TrustVault</span>
+            <span class="role-tag admin" style="font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; background: rgba(248, 113, 113, 0.15); color: #F87171; border: 1px solid rgba(248, 113, 113, 0.3); font-weight: 800;">ADMIN</span>
+          </div>
+          <span class="brand-tagline">Secure Document Sharing &amp; Access Management</span>
         </div>
-        <span class="brand-tagline">Secure Document Sharing &amp; Access Management</span>
+      </div>
+
+      <!-- Header Right: Welcome, admin and Dashboard link -->
+      <div class="app-user-section">
+        <div class="welcome-box">
+          <span class="welcome-text">Welcome, <strong id="hdr-username" class="welcome-username">admin</strong></span>
+          <span class="signin-pill">
+            <span class="signin-dot" style="background-color: #F87171; box-shadow: 0 0 8px #F87171;"></span>Signed In (Admin)
+          </span>
+        </div>
+        <a href="/dashboard.html" class="btn-secondary" style="text-decoration: none; display: inline-flex; align-items: center; padding: 8px 16px; font-size: 0.85rem;">Dashboard</a>
+        <button id="logout-btn" class="btn-secondary">Sign out</button>
       </div>
     </div>
+  </header>
 
-    <!-- Header Right: Welcome, username as signin -->
-    <div class="app-user-section">
-      <a href="/dashboard.html" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;">Dashboard</a>
-      <div class="welcome-box">
-        <span class="welcome-text">Welcome, <strong id="hdr-username" class="welcome-username">admin</strong></span>
-        <span class="signin-pill">
-          <span class="signin-dot"></span>Signed In (Admin)
-        </span>
+  <main class="admin-container">
+
+    <!-- Chain verify banner -->
+    <div id="chain-banner" class="alert-banner hidden" style="margin-bottom: 24px;"></div>
+
+    <!-- Suspicious items section -->
+    <section class="card" style="margin-bottom: 32px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <h2 style="font-size: 1.15rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
+          <span style="color: var(--accent-honey);">⚠</span> Suspicious Activity
+        </h2>
+        <button id="refresh-suspicious-btn" class="btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;">Refresh</button>
       </div>
-      <button id="logout-btn" class="btn-secondary">Sign out</button>
-    </div>
-  </div>
-</header>
-
-<main class="admin-container">
-
-  <!-- Chain Verify Banner -->
-  <div id="chain-banner" class="alert-banner hidden" style="padding: 14px 18px; margin-bottom: 24px; font-weight: 500;"></div>
-
-  <!-- Suspicious Activity Section -->
-  <section style="margin-bottom: 32px;">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-      <h2 style="font-size: 1.15rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
-        <span style="color: var(--accent-honey);">⚠</span> Suspicious Activity
-      </h2>
-      <button id="refresh-suspicious-btn" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 14px;">Refresh</button>
-    </div>
-    <div id="suspicious-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-      <p style="color: var(--text-muted); font-size: 0.85rem;">Loading…</p>
-    </div>
-  </section>
-
-  <!-- Audit Log Section -->
-  <section>
-    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px;">
-      <h2 style="font-size: 1.2rem; font-weight: 700; color: #FFFFFF;">Cryptographic Audit Log</h2>
-      
-      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-        <select id="filter-outcome" class="form-input" style="width: 140px; padding: 8px 12px;">
-          <option value="">All outcomes</option>
-          <option value="ALLOW">ALLOW</option>
-          <option value="DENY">DENY</option>
-        </select>
-        <input type="text" id="filter-action" placeholder="Action…" maxlength="50" class="form-input" style="width: 130px; padding: 8px 12px;" />
-        <input type="text" id="filter-actor" placeholder="Actor ID…" maxlength="10" class="form-input" style="width: 110px; padding: 8px 12px;" />
-        <button id="audit-search-btn" class="btn-secondary" style="padding: 8px 14px;">Filter</button>
-        <button id="verify-btn" class="btn-primary" style="width: auto; padding: 8px 16px; font-size: 0.825rem;">
-          🔗 Verify Chain
-        </button>
+      <div id="suspicious-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <p class="col-span-3 text-gray-500 text-sm">Loading…</p>
       </div>
-    </div>
+    </section>
 
-    <!-- Table Card -->
-    <div class="card" style="padding: 0; overflow: hidden;">
-      <div class="data-table-wrap" style="border: none; border-radius: 0;">
+    <!-- Audit log section -->
+    <section class="card">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px;">
+        <h2 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF;">Audit Log</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+          <select id="filter-outcome" class="form-input" style="width: auto; padding: 6px 12px; font-size: 0.85rem;">
+            <option value="">All outcomes</option>
+            <option value="ALLOW">ALLOW</option>
+            <option value="DENY">DENY</option>
+          </select>
+          <input type="text" id="filter-action" placeholder="Action…" maxlength="50" class="form-input" style="width: 130px; padding: 6px 12px; font-size: 0.85rem;" />
+          <input type="text" id="filter-actor" placeholder="Actor ID…" maxlength="10" class="form-input" style="width: 100px; padding: 6px 12px; font-size: 0.85rem;" />
+          <button id="audit-search-btn" class="btn-secondary" style="padding: 6px 14px; font-size: 0.85rem;">Filter</button>
+          <button id="verify-btn" class="btn-primary" style="padding: 6px 16px; font-size: 0.85rem; width: auto; background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);">
+            🔗 Verify Chain
+          </button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="data-table-wrap">
         <table class="data-table">
           <thead>
             <tr>
-              <th style="width: 44px;">#</th>
+              <th style="width: 48px;">#</th>
               <th>Timestamp</th>
               <th>Actor</th>
               <th>Action</th>
@@ -100,29 +114,26 @@
             </tr>
           </thead>
           <tbody id="audit-tbody">
-            <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading…</td></tr>
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 24px; color: var(--text-muted);">Loading…</td>
+            </tr>
           </tbody>
         </table>
       </div>
 
       <!-- Pagination -->
-      <div style="padding: 14px 20px; border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-muted);">
         <span id="page-info"></span>
         <div style="display: flex; gap: 8px;">
-          <button id="prev-btn" class="btn-secondary" style="padding: 6px 12px;" disabled>← Prev</button>
-          <button id="next-btn" class="btn-secondary" style="padding: 6px 12px;" disabled>Next →</button>
+          <button id="prev-btn" class="btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;" disabled>← Prev</button>
+          <button id="next-btn" class="btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;" disabled>Next →</button>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Standardized Footer -->
-  <footer class="auth-footer" style="margin-top: 64px;">
-    TrustVault, Secure Document Sharing &amp; Access Management, &copy; 2026 TrustVault
-  </footer>
+  </main>
 
-</main>
-
-<script src="/js/admin.js"></script>
+  <script src="/js/admin.js"></script>
 </body>
+
 </html>

@@ -28,13 +28,16 @@
 }
 
 /* ── Reset & Base Styles ─────────────────────────────────────────────────── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html,
+body {
   width: 100%;
   min-height: 100%;
   background-color: var(--bg-base);
@@ -51,6 +54,7 @@ a {
   text-decoration: none;
   transition: all 0.2s ease;
 }
+
 a:hover {
   color: var(--accent-honey);
   text-shadow: 0 0 10px rgba(220, 174, 29, 0.5);
@@ -63,7 +67,9 @@ button {
   outline: none;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
   font-family: inherit;
 }
 
@@ -81,32 +87,33 @@ input, select, textarea {
   white-space: nowrap;
 }
 
-.badge-allowed, .badge-mist {
+.badge-allowed,
+.badge-mist {
   color: var(--mist);
   background: rgba(122, 157, 150, 0.14);
   border: 1px solid rgba(122, 157, 150, 0.4);
 }
 
-.badge-warning, .badge-honey {
+.badge-warning,
+.badge-honey {
   color: var(--accent-honey);
   background: rgba(220, 174, 29, 0.14);
   border: 1px solid rgba(220, 174, 29, 0.4);
 }
 
-.badge-blocked, .badge-danger, .badge-red {
+.badge-blocked,
+.badge-danger,
+.badge-red {
   color: var(--danger);
   background: rgba(214, 69, 69, 0.14);
   border: 1px solid rgba(214, 69, 69, 0.4);
 }
 
-.badge-neutral, .badge-cerulean {
+.badge-neutral,
+.badge-cerulean {
   color: var(--pure-white);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.hidden {
-  display: none !important;
 }
 
 /* ── AWESOME 5-SECOND INTRO OVERLAY ──────────────────────────────────────── */
@@ -259,35 +266,78 @@ input, select, textarea {
 }
 
 @keyframes radarSweep {
-  0% { top: -5%; opacity: 0; }
-  10% { opacity: 0.8; }
-  90% { opacity: 0.8; }
-  100% { top: 105%; opacity: 0; }
+  0% {
+    top: -5%;
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.8;
+  }
+
+  90% {
+    opacity: 0.8;
+  }
+
+  100% {
+    top: 105%;
+    opacity: 0;
+  }
 }
 
 @keyframes spinClockwise {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes spinCounterClockwise {
-  from { transform: rotate(360deg); }
-  to { transform: rotate(0deg); }
+  from {
+    transform: rotate(360deg);
+  }
+
+  to {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes shockwavePulse {
-  0% { transform: scale(0.9); opacity: 0.8; }
-  70% { transform: scale(1.6); opacity: 0; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
 }
 
 @keyframes floatLevitate {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-7px);
+  }
 }
 
 @keyframes shimmerTitle {
-  to { background-position: 200% center; }
+  to {
+    background-position: 200% center;
+  }
 }
 
 @keyframes introContentZoom {
@@ -295,6 +345,7 @@ input, select, textarea {
     opacity: 0;
     transform: scale(0.88) translateY(18px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -302,13 +353,25 @@ input, select, textarea {
 }
 
 @keyframes fadeUpTagline {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 0.95; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 0.95;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInHint {
-  from { opacity: 0; }
-  to { opacity: 0.85; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0.85;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -344,7 +407,8 @@ input, select, textarea {
   width: 100%;
   height: 100%;
   z-index: 0;
-  pointer-events: auto; /* Enables interactive mouse tracking */
+  pointer-events: auto;
+  /* Enables interactive mouse tracking */
 }
 
 .branding-header,
@@ -352,7 +416,8 @@ input, select, textarea {
 .branding-footer {
   position: relative;
   z-index: 2;
-  pointer-events: none; /* Let canvas capture mouse */
+  pointer-events: none;
+  /* Let canvas capture mouse */
 }
 
 .branding-header *,
@@ -373,6 +438,7 @@ input, select, textarea {
   filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
   transition: transform 0.3s ease;
 }
+
 .brand-logo-icon:hover {
   transform: scale(1.08) rotate(5deg);
 }
@@ -542,8 +608,15 @@ input, select, textarea {
 }
 
 @keyframes bannerFadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .alert-banner.alert-danger {
@@ -694,6 +767,7 @@ input, select, textarea {
   background-color: var(--danger);
   box-shadow: 0 0 10px rgba(214, 69, 69, 0.6);
 }
+
 .strength-weak .strength-value {
   color: var(--danger);
 }
@@ -703,6 +777,7 @@ input, select, textarea {
   background-color: var(--accent-honey);
   box-shadow: 0 0 10px rgba(220, 174, 29, 0.6);
 }
+
 .strength-medium .strength-value {
   color: var(--accent-honey);
 }
@@ -712,6 +787,7 @@ input, select, textarea {
   background-color: var(--mist);
   box-shadow: 0 0 10px rgba(122, 157, 150, 0.6);
 }
+
 .strength-strong .strength-value {
   color: var(--mist);
 }
@@ -761,12 +837,18 @@ input, select, textarea {
   font-size: 0.75rem;
   margin-top: 5px;
 }
+
 .confirm-match-hint.matched {
   color: var(--pure-white);
   font-weight: 500;
 }
+
 .confirm-match-hint.mismatched {
   color: var(--danger);
+}
+
+.hidden {
+  display: none !important;
 }
 
 /* ── Demo Access Section ─────────────────────────────────────────────────── */
@@ -779,15 +861,16 @@ input, select, textarea {
 }
 
 .demo-title {
-  font-size: 0.775rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--pure-white);
-  margin-bottom: 10px;
+  color: #FFFFFF;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
 }
 
 .demo-buttons-grid {
@@ -809,27 +892,19 @@ input, select, textarea {
   align-items: center;
   gap: 4px;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   user-select: none;
 }
 
 .demo-btn:hover {
   background: #101826;
-  border-color: #FFFFFF;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
   transform: translateY(-2px);
 }
 
-.demo-btn:active,
-.demo-btn.popping {
-  animation: buttonPopUp 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes buttonPopUp {
-  0% { transform: scale(1); }
-  35% { transform: scale(0.92) translateY(2px); }
-  65% { transform: scale(1.15) translateY(-6px); box-shadow: 0 0 25px rgba(59, 130, 246, 0.7); }
-  100% { transform: scale(1) translateY(0); }
+/* Simple, snappy click — no popping twice */
+.demo-btn:active {
+  transform: scale(0.96) translateY(0);
 }
 
 .demo-btn .user-name {
@@ -844,30 +919,74 @@ input, select, textarea {
   text-transform: uppercase;
 }
 
-/* Admin and Viewer in Thick Blue (#3B82F6 / #2563EB) */
-.demo-btn.demo-admin .user-name,
-.demo-btn.demo-admin .role-tag {
-  color: #3B82F6;
-  font-weight: 800;
-  text-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+/* ── ONLY Viewer in Blue Colour ── */
+.demo-btn.demo-viewer {
+  border-color: rgba(59, 130, 246, 0.4);
 }
-
+.demo-btn.demo-viewer:hover {
+  border-color: #3B82F6;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.35);
+}
 .demo-btn.demo-viewer .user-name,
 .demo-btn.demo-viewer .role-tag {
-  color: #3B82F6;
+  color: #3B82F6 !important;
   font-weight: 800;
-  text-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
 }
 
-/* Owner in Gold/Honey */
+/* Admin: white text, red tag, neutral hover */
+.demo-btn.demo-admin .user-name {
+  color: #FFFFFF;
+  font-weight: 600;
+}
+.demo-btn.demo-admin .role-tag {
+  color: #F87171;
+  font-weight: 800;
+}
+
+/* Owner: white text, gold tag, honey hover */
+.demo-btn.demo-owner:hover {
+  border-color: rgba(220, 174, 29, 0.5);
+  box-shadow: 0 4px 16px rgba(220, 174, 29, 0.15);
+}
 .demo-btn.demo-owner .user-name {
   color: #FFFFFF;
-  font-weight: 700;
+  font-weight: 600;
 }
 .demo-btn.demo-owner .role-tag {
   color: var(--accent-honey);
   font-weight: 800;
-  text-shadow: 0 0 12px rgba(220, 174, 29, 0.4);
+}
+
+/* Role colors in header: viewer in blue */
+.role-viewer,
+#hdr-role.role-viewer {
+  color: #3B82F6 !important;
+  font-weight: 700;
+}
+.role-owner,
+#hdr-role.role-owner {
+  color: var(--accent-honey) !important;
+  font-weight: 700;
+}
+.role-admin,
+#hdr-role.role-admin {
+  color: #F87171 !important;
+  font-weight: 700;
+}
+
+/* 3-box alignment under Suspicious Activity */
+#suspicious-container {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+
+@media (max-width: 840px) {
+  #suspicious-container {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ── Universal App Header (Top Left Logo + Brand + Tagline Underneath) ────── */
@@ -987,24 +1106,6 @@ input, select, textarea {
   padding: 24px;
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
   margin-bottom: 24px;
-}
-
-.doc-card {
-  background: linear-gradient(180deg, #0B101B 0%, #060910 100%);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 18px 20px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  transition: all 0.2s ease;
-}
-.doc-card:hover {
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-  transform: translateY(-1px);
 }
 
 .data-table-wrap {

@@ -14,8 +14,15 @@
 
   <!-- Shared Design System -->
   <link rel="stylesheet" href="/css/style.css" />
+
+  <!-- Tailwind for original document cards, badges, and modals -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .fade-in { animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  </style>
 </head>
-<body class="dashboard-page">
+<body class="bg-gray-950 text-gray-200 min-h-screen">
 
 <!-- ── App Header (Top Left Logo + Brand + Tagline Underneath) ─────────────── -->
 <header class="app-header">
@@ -31,7 +38,7 @@
     <!-- Header Right: Welcome, username as signin -->
     <div class="app-user-section">
       <div class="welcome-box">
-        <span class="welcome-text">Welcome, <strong id="hdr-username" class="welcome-username"></strong></span>
+        <span class="welcome-text">Welcome, <strong id="hdr-username" class="welcome-username text-white"></strong></span>
         <span class="signin-pill">
           <span class="signin-dot"></span>Signed In (<span id="hdr-role"></span>)
         </span>
@@ -41,120 +48,101 @@
   </div>
 </header>
 
-<!-- ── Main Dashboard ─────────────────────────────────────────────────────── -->
-<main class="dashboard-container">
+<!-- ── Main ────────────────────────────────────────────────────────────────── -->
+<main class="max-w-6xl mx-auto px-4 py-8">
 
-  <!-- Upload Section (Visible to owners only) -->
-  <section id="upload-section" class="card hidden" style="margin-bottom: 32px;">
-    <h2 style="font-size: 1.15rem; font-weight: 700; color: #FFFFFF; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-      <span>📤</span> Upload Document
-    </h2>
-    <div id="upload-error" class="alert-banner alert-danger" style="display: none;"></div>
-    <div id="upload-success" class="alert-banner alert-success" style="display: none;"></div>
+  <!-- Upload section (visible to owners only) -->
+  <section id="upload-section" class="hidden mb-8">
+    <h2 class="text-lg font-semibold text-white mb-4">Upload Document</h2>
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">
+      <div id="upload-error" class="hidden mb-4 p-3 rounded-lg bg-red-950 border border-red-700 text-red-300 text-sm"></div>
+      <div id="upload-success" class="hidden mb-4 p-3 rounded-lg bg-green-950 border border-green-700 text-green-300 text-sm"></div>
+      <form id="upload-form" class="flex flex-wrap gap-4 items-end">
+        <div class="flex-1 min-w-48">
+          <label for="file-input" class="block text-xs font-medium text-gray-400 mb-1">File (pdf, png, jpg, txt, docx — max 5 MB)</label>
+          <input type="file" id="file-input" accept=".pdf,.png,.jpg,.jpeg,.txt,.docx"
+            class="w-full text-sm text-gray-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg
+                   file:border-0 file:bg-blue-600 file:text-white file:cursor-pointer
+                   file:hover:bg-blue-500 transition" />
+        </div>
+        <div class="w-40">
+          <label for="category-input" class="block text-xs font-medium text-gray-400 mb-1">Category</label>
+          <input type="text" id="category-input" maxlength="64" placeholder="e.g. finance"
+            class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white
+                   placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <button type="submit" id="upload-btn"
+          class="px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-xl
+                 transition-colors disabled:opacity-50 text-sm">
+          Upload
+        </button>
+      </form>
+    </div>
+  </section>
 
-    <form id="upload-form" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;">
-      <div style="flex: 1; min-width: 240px;">
-        <label for="file-input" class="form-label">File (pdf, png, jpg, txt, docx — max 5 MB)</label>
-        <input
-          type="file"
-          id="file-input"
-          accept=".pdf,.png,.jpg,.jpeg,.txt,.docx"
-          class="form-input"
-          style="padding: 8px 12px;"
-        />
-      </div>
-      <div style="width: 200px;">
-        <label for="category-input" class="form-label">Category</label>
-        <input
-          type="text"
-          id="category-input"
-          maxlength="64"
-          placeholder="e.g. finance, legal"
-          class="form-input"
-        />
-      </div>
-      <button type="submit" id="upload-btn" class="btn-primary" style="width: auto; height: 42px; padding: 0 24px;">
-        Upload
+  <!-- Search & filter -->
+  <section class="mb-6">
+    <h2 class="text-lg font-semibold text-white mb-4">Documents</h2>
+    <div class="flex flex-wrap gap-3 mb-4">
+      <input type="search" id="search-q" placeholder="Search name or category…"
+        class="flex-1 min-w-48 px-4 py-2 bg-gray-900 border border-gray-800 rounded-xl text-sm text-white
+               placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <input type="text" id="filter-category" placeholder="Category filter"
+        class="w-36 px-3 py-2 bg-gray-900 border border-gray-800 rounded-xl text-sm text-white
+               placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <button id="search-btn"
+        class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-sm rounded-xl transition-colors">
+        Search
       </button>
-    </form>
-  </section>
-
-  <!-- Search & Filter Section -->
-  <section style="margin-bottom: 24px;">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-      <h2 style="font-size: 1.2rem; font-weight: 700; color: #FFFFFF;">Documents</h2>
-    </div>
-
-    <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
-      <input
-        type="search"
-        id="search-q"
-        placeholder="Search name or category…"
-        class="form-input"
-        style="flex: 1; min-width: 220px;"
-      />
-      <input
-        type="text"
-        id="filter-category"
-        placeholder="Category filter"
-        class="form-input"
-        style="width: 160px;"
-      />
-      <button id="search-btn" class="btn-secondary">Search</button>
-      <button id="clear-btn" class="btn-secondary">Clear</button>
+      <button id="clear-btn"
+        class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-sm rounded-xl transition-colors">
+        Clear
+      </button>
     </div>
   </section>
 
-  <!-- Document List Container -->
-  <div id="doc-list" style="display: flex; flex-direction: column; gap: 12px;">
-    <p style="color: var(--text-muted); font-size: 0.9rem;">Loading documents…</p>
+  <!-- Document list -->
+  <div id="doc-list" class="space-y-3">
+    <p class="text-gray-500 text-sm">Loading documents…</p>
   </div>
-
-  <!-- Standardized Footer -->
-  <footer class="auth-footer" style="margin-top: 64px;">
-    TrustVault, Secure Document Sharing &amp; Access Management, &copy; 2026 TrustVault
-  </footer>
 
 </main>
 
 <!-- ── Permissions Modal ──────────────────────────────────────────────────── -->
-<div id="modal-backdrop" class="modal-backdrop hidden">
-  <div class="modal-card">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
-      <h3 style="font-size: 1.15rem; font-weight: 700; color: #FFFFFF;">Manage Permissions</h3>
-      <button id="modal-close" style="background: none; color: var(--text-muted); font-size: 1.6rem; line-height: 1; cursor: pointer; border: none;">&times;</button>
+<div id="modal-backdrop" class="fixed inset-0 bg-black/70 z-40 hidden flex items-center justify-center p-4">
+  <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col">
+    <div class="flex items-center justify-between p-5 border-b border-gray-800">
+      <h3 class="font-semibold text-white">Manage Permissions</h3>
+      <button id="modal-close" class="text-gray-400 hover:text-white text-xl leading-none">&times;</button>
     </div>
 
-    <div>
-      <div style="margin-bottom: 24px;">
-        <h4 style="font-size: 0.85rem; font-weight: 600; color: #FFFFFF; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Grant Access</h4>
-        <div id="grant-error" class="alert-banner alert-danger" style="display: none; padding: 8px 12px; margin-bottom: 12px;"></div>
-        
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-          <input
-            type="text"
-            id="grant-username"
-            placeholder="Username"
-            maxlength="64"
-            class="form-input"
-            style="flex: 1; min-width: 140px;"
-          />
-          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #FFFFFF; cursor: pointer;">
-            <input type="checkbox" id="grant-can-read" checked /> Read
+    <div class="overflow-y-auto flex-1 p-5 space-y-6">
+      <!-- Grant form -->
+      <div>
+        <h4 class="text-sm font-medium text-gray-300 mb-3">Grant Access</h4>
+        <div id="grant-error" class="hidden mb-3 p-2 rounded bg-red-950 border border-red-700 text-red-300 text-xs"></div>
+        <div class="flex gap-2 flex-wrap">
+          <input type="text" id="grant-username" placeholder="Username" maxlength="64"
+            class="flex-1 min-w-32 px-3 py-2 bg-gray-800 border border-gray-700 rounded-lg text-sm text-white
+                   placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <label class="flex items-center gap-1.5 text-sm text-gray-300 cursor-pointer">
+            <input type="checkbox" id="grant-can-read" checked class="rounded" /> Read
           </label>
-          <label style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #FFFFFF; cursor: pointer;">
-            <input type="checkbox" id="grant-can-edit" /> Edit
+          <label class="flex items-center gap-1.5 text-sm text-gray-300 cursor-pointer">
+            <input type="checkbox" id="grant-can-edit" class="rounded" /> Edit
           </label>
-          <button id="grant-btn" class="btn-primary" style="width: auto; padding: 9px 18px; font-size: 0.85rem;">
+          <button id="grant-btn"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors">
             Grant
           </button>
         </div>
       </div>
 
+      <!-- Existing permissions list -->
       <div>
-        <h4 style="font-size: 0.85rem; font-weight: 600; color: #FFFFFF; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.05em;">Current Permissions</h4>
-        <div id="perms-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 260px; overflow-y: auto;">
-          <p style="color: var(--text-muted); font-size: 0.85rem;">Loading…</p>
+        <h4 class="text-sm font-medium text-gray-300 mb-3">Current Permissions</h4>
+        <div id="perms-list" class="space-y-2 text-sm">
+          <p class="text-gray-500">Loading…</p>
         </div>
       </div>
     </div>
@@ -162,25 +150,28 @@
 </div>
 
 <!-- ── Edit Metadata Modal ─────────────────────────────────────────────────── -->
-<div id="edit-modal-backdrop" class="modal-backdrop hidden">
-  <div class="modal-card" style="max-width: 450px;">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 14px;">
-      <h3 style="font-size: 1.15rem; font-weight: 700; color: #FFFFFF;">Edit Metadata</h3>
-      <button id="edit-modal-close" style="background: none; color: var(--text-muted); font-size: 1.6rem; line-height: 1; cursor: pointer; border: none;">&times;</button>
+<div id="edit-modal-backdrop" class="fixed inset-0 bg-black/70 z-40 hidden flex items-center justify-center p-4">
+  <div class="bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl w-full max-w-md p-6">
+    <div class="flex items-center justify-between mb-5">
+      <h3 class="font-semibold text-white">Edit Metadata</h3>
+      <button id="edit-modal-close" class="text-gray-400 hover:text-white text-xl leading-none">&times;</button>
     </div>
-
-    <div id="edit-error" class="alert-banner alert-danger" style="display: none; padding: 8px 12px; margin-bottom: 14px;"></div>
-
-    <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div id="edit-error" class="hidden mb-4 p-2 rounded bg-red-950 border border-red-700 text-red-300 text-xs"></div>
+    <div class="space-y-4">
       <div>
-        <label for="edit-name" class="form-label">File name</label>
-        <input type="text" id="edit-name" maxlength="255" class="form-input" />
+        <label for="edit-name" class="block text-xs font-medium text-gray-400 mb-1">File name</label>
+        <input type="text" id="edit-name" maxlength="255"
+          class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white
+                 focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
       <div>
-        <label for="edit-category" class="form-label">Category</label>
-        <input type="text" id="edit-category" maxlength="64" class="form-input" />
+        <label for="edit-category" class="block text-xs font-medium text-gray-400 mb-1">Category</label>
+        <input type="text" id="edit-category" maxlength="64"
+          class="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white
+                 focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
-      <button id="edit-save-btn" class="btn-primary" style="margin-top: 8px;">
+      <button id="edit-save-btn"
+        class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-xl transition-colors text-sm">
         Save Changes
       </button>
     </div>

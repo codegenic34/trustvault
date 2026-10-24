@@ -4,57 +4,57 @@
 
 (function () {
   // ── Elements ───────────────────────────────────────────────────────────────
-  const introOverlay   = document.getElementById('intro-overlay');
-  const tabSignIn      = document.getElementById('tab-signin');
-  const tabRegister    = document.getElementById('tab-register');
-  const panelSignIn    = document.getElementById('panel-signin');
-  const panelRegister  = document.getElementById('panel-register');
+  const introOverlay = document.getElementById('intro-overlay');
+  const tabSignIn = document.getElementById('tab-signin');
+  const tabRegister = document.getElementById('tab-register');
+  const panelSignIn = document.getElementById('panel-signin');
+  const panelRegister = document.getElementById('panel-register');
 
-  const errorBanner    = document.getElementById('error-banner');
-  const errorText      = document.getElementById('error-text');
-  const successBanner  = document.getElementById('success-banner');
-  const successText    = document.getElementById('success-text');
+  const errorBanner = document.getElementById('error-banner');
+  const errorText = document.getElementById('error-text');
+  const successBanner = document.getElementById('success-banner');
+  const successText = document.getElementById('success-text');
 
-  const signInForm     = document.getElementById('signin-form');
-  const signInUserEl   = document.getElementById('signin-username');
-  const signInPassEl   = document.getElementById('signin-password');
-  const signInBtn      = document.getElementById('signin-submit-btn');
+  const signInForm = document.getElementById('signin-form');
+  const signInUserEl = document.getElementById('signin-username');
+  const signInPassEl = document.getElementById('signin-password');
+  const signInBtn = document.getElementById('signin-submit-btn');
 
-  const demoAdminBtn   = document.getElementById('demo-admin-btn');
-  const demoOwnerBtn   = document.getElementById('demo-owner-btn');
-  const demoViewerBtn  = document.getElementById('demo-viewer-btn');
+  const demoAdminBtn = document.getElementById('demo-admin-btn');
+  const demoOwnerBtn = document.getElementById('demo-owner-btn');
+  const demoViewerBtn = document.getElementById('demo-viewer-btn');
 
-  const regForm        = document.getElementById('register-form');
-  const regFullNameEl  = document.getElementById('reg-fullname');
-  const regUsernameEl  = document.getElementById('reg-username');
-  const regEmailEl     = document.getElementById('reg-email');
-  const regPassEl      = document.getElementById('reg-password');
-  const regConfirmEl   = document.getElementById('reg-confirm-password');
-  const regBtn         = document.getElementById('register-submit-btn');
+  const regForm = document.getElementById('register-form');
+  const regFullNameEl = document.getElementById('reg-fullname');
+  const regUsernameEl = document.getElementById('reg-username');
+  const regEmailEl = document.getElementById('reg-email');
+  const regPassEl = document.getElementById('reg-password');
+  const regConfirmEl = document.getElementById('reg-confirm-password');
+  const regBtn = document.getElementById('register-submit-btn');
 
   const strengthSection = document.getElementById('strength-section');
-  const strengthLabel   = document.getElementById('strength-label-text');
-  const strengthBar     = document.getElementById('strength-meter-bar');
+  const strengthLabel = document.getElementById('strength-label-text');
+  const strengthBar = document.getElementById('strength-meter-bar');
 
-  const ruleLength     = document.getElementById('rule-length');
-  const ruleUpper      = document.getElementById('rule-upper');
-  const ruleLower      = document.getElementById('rule-lower');
-  const ruleNumber     = document.getElementById('rule-number');
-  const ruleSpecial    = document.getElementById('rule-special');
+  const ruleLength = document.getElementById('rule-length');
+  const ruleUpper = document.getElementById('rule-upper');
+  const ruleLower = document.getElementById('rule-lower');
+  const ruleNumber = document.getElementById('rule-number');
+  const ruleSpecial = document.getElementById('rule-special');
 
-  const iconLength     = document.getElementById('icon-length');
-  const iconUpper      = document.getElementById('icon-upper');
-  const iconLower      = document.getElementById('icon-lower');
-  const iconNumber     = document.getElementById('icon-number');
-  const iconSpecial    = document.getElementById('icon-special');
+  const iconLength = document.getElementById('icon-length');
+  const iconUpper = document.getElementById('icon-upper');
+  const iconLower = document.getElementById('icon-lower');
+  const iconNumber = document.getElementById('icon-number');
+  const iconSpecial = document.getElementById('icon-special');
 
   const confirmMatchEl = document.getElementById('confirm-match-status');
-  const canvas         = document.getElementById('nodes-canvas');
+  const canvas = document.getElementById('nodes-canvas');
 
   // In-memory demo credentials only — NEVER written to localStorage
   const DEMO_CREDENTIALS = {
-    admin:  { u: 'admin',   p: 'Admin1234!' },
-    owner:  { u: 'owner1',  p: 'Owner1234!' },
+    admin: { u: 'admin', p: 'Admin1234!' },
+    owner: { u: 'owner1', p: 'Owner1234!' },
     viewer: { u: 'viewer1', p: 'Viewer123!' },
   };
 
@@ -389,16 +389,9 @@
   tabRegister.addEventListener('click', () => switchTab('register'));
 
   // ── Demo Access Handlers (Rule 6 & User Request) ───────────────────────────
-  function applyDemoLogin(role, btnElement) {
+  function applyDemoLogin(role) {
     const creds = DEMO_CREDENTIALS[role];
     if (!creds) return;
-
-    // Trigger pop up animation
-    if (btnElement) {
-      btnElement.classList.remove('popping');
-      void btnElement.offsetWidth; // force DOM reflow
-      btnElement.classList.add('popping');
-    }
 
     switchTab('signin');
     // ONLY username and password get entered
@@ -409,17 +402,17 @@
     signInBtn.focus();
   }
 
-  demoAdminBtn.addEventListener('click', () => applyDemoLogin('admin', demoAdminBtn));
-  demoOwnerBtn.addEventListener('click', () => applyDemoLogin('owner', demoOwnerBtn));
-  demoViewerBtn.addEventListener('click', () => applyDemoLogin('viewer', demoViewerBtn));
+  demoAdminBtn.addEventListener('click', () => applyDemoLogin('admin'));
+  demoOwnerBtn.addEventListener('click', () => applyDemoLogin('owner'));
+  demoViewerBtn.addEventListener('click', () => applyDemoLogin('viewer'));
 
   // ── Live Password Requirements & Strength (Rule 5) ────────────────────────
   function validatePasswordCriteria(pwd) {
     return {
-      length:  pwd.length >= 8,
-      upper:   /[A-Z]/.test(pwd),
-      lower:   /[a-z]/.test(pwd),
-      number:  /[0-9]/.test(pwd),
+      length: pwd.length >= 8,
+      upper: /[A-Z]/.test(pwd),
+      lower: /[a-z]/.test(pwd),
+      number: /[0-9]/.test(pwd),
       special: /[^A-Za-z0-9]/.test(pwd),
     };
   }
@@ -510,7 +503,7 @@
         );
       }
     })
-    .catch(() => {});
+    .catch(() => { });
 
   // ── Sign In Form Submission (Rule 7) ───────────────────────────────────────
   signInForm.addEventListener('submit', async (e) => {
@@ -568,9 +561,9 @@
 
     const fullName = regFullNameEl.value.trim();
     const username = regUsernameEl.value.trim();
-    const email    = regEmailEl.value.trim();
+    const email = regEmailEl.value.trim();
     const password = regPassEl.value;
-    const confirm  = regConfirmEl.value;
+    const confirm = regConfirmEl.value;
 
     if (!fullName || !username || !email || !password || !confirm) {
       showError('All fields are required.');
