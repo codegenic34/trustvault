@@ -36,7 +36,7 @@ const LoginSchema = z.object({
 router.post('/login', loginLimiter, async (req: Request, res: Response) => {
   const parsed = LoginSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: 'Invalid input' });
+    res.status(401).json({ error: 'Invalid username or password.' });
     return;
   }
 
@@ -70,7 +70,7 @@ router.post('/login', loginLimiter, async (req: Request, res: Response) => {
       detail: `Failed login for username: ${username}`,
       deny_reason: 'INVALID_CREDENTIALS',
     });
-    res.status(401).json({ error: 'Invalid credentials' });
+    res.status(401).json({ error: 'Invalid username or password.' });
     return;
   }
 
@@ -82,7 +82,7 @@ router.post('/login', loginLimiter, async (req: Request, res: Response) => {
       detail: 'Login attempt by disabled user',
       deny_reason: 'DISABLED_USER',
     });
-    res.status(401).json({ error: 'Account disabled' });
+    res.status(401).json({ error: 'Invalid username or password.' });
     return;
   }
 
@@ -108,6 +108,67 @@ router.post('/login', loginLimiter, async (req: Request, res: Response) => {
     user: { id: user.id, username: user.username, role: user.role },
     csrfToken,
   });
+});
+
+const RegisterSchema = z.object({
+  fullName: z.string().min(1, 'Full name is required').max(100),
+  username: z
+    .string()
+    .min(3, 'Username must be at least 3 characters')
+    .max(32, 'Username must be at most 32 characters')
+    .regex(/^[a-zA-Z0-9_.-]+$/, 'Username may only contain letters, numbers, dots, hyphens, and underscores'),
+  email: z.string().email('Valid email is required').max(100),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(128, 'Password too long')
+    .refine((v) => /[A-Z]/.test(v), 'Password must contain at least one uppercase letter')
+    .refine((v) => /[a-z]/.test(v), 'Password must contain at least one lowercase letter')
+    .refine((v) => /[0-9]/.test(v), 'Password must contain at least one number')
+    .refine((v) => /[^A-Za-z0-9]/.test(v), 'Password must contain at least one special character'),
+  confirmPassword: z.string().optional(),
+});
+
+// POST /api/register  (Pre-auth account creation - always creates viewer role)
+router.post('/register', loginLimiter, async (req: Request, res: Response) => {
+  const parsed = RegisterSchema.safeParse(req.body);
+  if (!parsed.success) {
+    const firstErr = parsed.error.issues[0]?.message || 'Invalid input';
+    res.status(400).json({ error: firstErr });
+    return;
+  }
+
+  const { username, password } = parsed.data;
+
+  // Check if username already exists
+  const existing = db
+    .prepare('SELECT id FROM users WHERE username = ?')
+    .get(username);
+
+  if (existing) {
+    res.status(400).json({ error: 'Username is already taken' });
+    return;
+  }
+
+  try {
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    // New accounts are always created as 'viewer' on the server (no role field accepted)
+    db.prepare(
+      'INSERT INTO users (username, password_hash, role, active) VALUES (?, ?, ?, 1)'
+    ).run(username, passwordHash, 'viewer');
+
+    writeAudit({
+      actor_id: null,
+      action: 'REGISTER',
+      outcome: 'ALLOW',
+      detail: `New viewer account created for: ${username}`,
+    });
+
+    res.status(201).json({ message: 'Account created successfully. Please sign in.' });
+  } catch (err) {
+    res.status(500).json({ error: 'Could not create account. Please try again.' });
+  }
 });
 
 // POST /api/logout

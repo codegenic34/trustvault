@@ -20,11 +20,11 @@ app.use(
     contentSecurityPolicy: {
       directives: {
         defaultSrc:      ["'self'"],
-        scriptSrc:       ["'self'", 'https://cdn.tailwindcss.com'],
-        styleSrc:        ["'self'", "'unsafe-inline'", 'https://cdn.tailwindcss.com'],
+        scriptSrc:       ["'self'"],
+        styleSrc:        ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         imgSrc:          ["'self'", 'data:'],
         connectSrc:      ["'self'"],
-        fontSrc:         ["'self'"],
+        fontSrc:         ["'self'", 'https://fonts.gstatic.com'],
         objectSrc:       ["'none'"],
         frameAncestors:  ["'none'"],
         baseUri:         ["'self'"],

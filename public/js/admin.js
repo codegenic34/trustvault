@@ -107,8 +107,8 @@ async function loadAudit() {
     outcomeCell.className = 'px-4 py-2.5 text-xs font-semibold';
     const badge = document.createElement('span');
     badge.className = log.outcome === 'DENY'
-      ? 'px-2 py-0.5 rounded-full bg-red-900 text-red-300'
-      : 'px-2 py-0.5 rounded-full bg-green-900 text-green-300';
+      ? 'badge badge-blocked'
+      : 'badge badge-allowed';
     badge.textContent = log.outcome;
     outcomeCell.appendChild(badge);
     tr.appendChild(outcomeCell);

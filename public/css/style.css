@@ -1,0 +1,818 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── TrustVault Design Tokens ─────────────────────────────────────────────── */
+:root {
+  --bg-base: #050A12;
+  --surface-1: #101827;
+  --surface-2: #151F30;
+  --surface-3: #1A263B;
+  --border-color: rgba(202, 228, 219, 0.15);
+  --border-focus: rgba(202, 228, 219, 0.45);
+  --accent-honey: #DCAE1D;
+  --accent-honey-hover: #C49B18;
+  --morning-sky: #CAE4DB;
+  --mist: #7A9D96;
+  --danger: #D64545;
+  --danger-bg: rgba(214, 69, 69, 0.12);
+  --danger-border: rgba(214, 69, 69, 0.3);
+  --text-main: #F5F7FA;
+  --text-muted: #94A3B8;
+  --cerulean: #0284C7;
+  --cerulean-light: #38BDF8;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+/* ── CSS Reset & Base Styles ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--morning-sky);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+a:hover {
+  color: var(--accent-honey);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+/* ── Status Badges (Design System Rule 2) ─────────────────────────────────── */
+/* ALLOWED=mist, WARNING=honey, BLOCKED=red, NEUTRAL=cerulean */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.725rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.badge-allowed, .badge-mist {
+  color: var(--mist);
+  background: rgba(122, 157, 150, 0.14);
+  border: 1px solid rgba(122, 157, 150, 0.35);
+}
+
+.badge-warning, .badge-honey {
+  color: var(--accent-honey);
+  background: rgba(220, 174, 29, 0.14);
+  border: 1px solid rgba(220, 174, 29, 0.35);
+}
+
+.badge-blocked, .badge-danger, .badge-red {
+  color: var(--danger);
+  background: rgba(214, 69, 69, 0.14);
+  border: 1px solid rgba(214, 69, 69, 0.35);
+}
+
+.badge-neutral, .badge-cerulean {
+  color: var(--cerulean-light);
+  background: rgba(56, 189, 248, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+/* ── 5-Second Intro Overlay (Rule 3) ─────────────────────────────────────── */
+#intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background-color: var(--bg-base);
+  background-image:
+    linear-gradient(rgba(202, 228, 219, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(202, 228, 219, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  cursor: pointer;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+  user-select: none;
+}
+
+#intro-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: introEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.intro-logo-wrap {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 24px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro-logo-glow {
+  position: absolute;
+  inset: -12px;
+  background: radial-gradient(circle, rgba(220, 174, 29, 0.25) 0%, rgba(122, 157, 150, 0.15) 50%, transparent 70%);
+  border-radius: 50%;
+  animation: pulseGlow 3s infinite alternate ease-in-out;
+}
+
+.intro-logo {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 20px rgba(220, 174, 29, 0.4));
+}
+
+.intro-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--morning-sky) 60%, var(--mist) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.intro-tagline {
+  font-size: 1.05rem;
+  color: var(--morning-sky);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  max-width: 460px;
+  opacity: 0.9;
+}
+
+.intro-skip-hint {
+  margin-top: 40px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: rgba(16, 24, 39, 0.6);
+  animation: fadeInHint 1.5s ease-in 1s both;
+}
+
+@keyframes introEntrance {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(0.95); opacity: 0.6; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+@keyframes fadeInHint {
+  from { opacity: 0; }
+  to { opacity: 0.75; }
+}
+
+/* Reduced motion: skip intro entirely */
+@media (prefers-reduced-motion: reduce) {
+  #intro-overlay {
+    display: none !important;
+  }
+}
+
+/* ── Split Layout for Login (Rule 4) ─────────────────────────────────────── */
+.login-split-page {
+  min-height: 100vh;
+  display: flex;
+  background-color: var(--bg-base);
+}
+
+.branding-panel {
+  flex: 0 0 45%;
+  position: relative;
+  background: radial-gradient(circle at 30% 30%, #151F30 0%, #0A111C 60%, #050A12 100%);
+  border-right: 1px solid var(--border-color);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px;
+  z-index: 1;
+}
+
+#nodes-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.branding-header,
+.branding-body,
+.branding-footer {
+  position: relative;
+  z-index: 2;
+}
+
+.branding-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo-icon {
+  width: 38px;
+  height: 38px;
+  filter: drop-shadow(0 2px 8px rgba(220, 174, 29, 0.3));
+}
+
+.brand-name {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-main);
+  text-transform: uppercase;
+}
+
+.branding-body {
+  max-width: 420px;
+}
+
+.branding-headline {
+  font-size: 2.1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-main);
+  margin-bottom: 16px;
+}
+
+.branding-headline span {
+  color: var(--accent-honey);
+}
+
+.branding-desc {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}
+
+.security-highlights {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.security-highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.875rem;
+  color: var(--morning-sky);
+}
+
+.highlight-bullet {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(122, 157, 150, 0.2);
+  border: 1px solid var(--mist);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--morning-sky);
+  font-size: 0.75rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.branding-footer-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ── Auth Card Panel (55%) ───────────────────────────────────────────────── */
+.auth-panel {
+  flex: 0 0 55%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background-color: var(--bg-base);
+  overflow-y: auto;
+}
+
+.auth-card-wrapper {
+  width: 100%;
+  max-width: 460px;
+}
+
+.auth-card {
+  background: var(--surface-1);
+  background: linear-gradient(180deg, var(--surface-1) 0%, var(--surface-2) 100%);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Tabs (Rule 5) ───────────────────────────────────────────────────────── */
+.tab-nav {
+  display: flex;
+  background: rgba(5, 10, 18, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: transparent;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+}
+
+.tab-btn.active {
+  background: var(--surface-2);
+  color: var(--morning-sky);
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(202, 228, 219, 0.15);
+}
+
+/* ── Error & Alert Banners ───────────────────────────────────────────────── */
+.alert-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin-bottom: 20px;
+}
+
+.alert-banner.alert-danger {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  color: #FFA5A5;
+}
+
+.alert-banner.alert-success {
+  background: rgba(122, 157, 150, 0.15);
+  border: 1px solid rgba(122, 157, 150, 0.4);
+  color: var(--morning-sky);
+}
+
+.alert-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+/* ── Form Controls ───────────────────────────────────────────────────────── */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--morning-sky);
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  background-color: var(--surface-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.form-input::placeholder {
+  color: #64748B;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--morning-sky);
+  box-shadow: 0 0 0 3px rgba(202, 228, 219, 0.15);
+  background-color: var(--surface-3);
+}
+
+/* Important Action Buttons (Accent Honey) */
+.btn-primary {
+  width: 100%;
+  padding: 12px 18px;
+  background-color: var(--accent-honey);
+  color: #050A12;
+  font-size: 0.925rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(220, 174, 29, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-honey-hover);
+  box-shadow: 0 6px 16px rgba(220, 174, 29, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Secondary Button */
+.btn-secondary {
+  padding: 8px 14px;
+  background-color: var(--surface-2);
+  border: 1px solid var(--border-color);
+  color: var(--morning-sky);
+  font-size: 0.825rem;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--surface-3);
+  border-color: var(--morning-sky);
+  color: var(--text-main);
+}
+
+/* ── Live Password Requirements & Strength (Rule 5) ──────────────────────── */
+.strength-section {
+  margin-top: 10px;
+  margin-bottom: 18px;
+}
+
+.strength-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 0.775rem;
+}
+
+.strength-label {
+  color: var(--text-muted);
+}
+
+.strength-value {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.strength-track {
+  height: 5px;
+  width: 100%;
+  background-color: rgba(5, 10, 18, 0.7);
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-weak .strength-fill {
+  width: 33%;
+  background-color: var(--danger);
+}
+.strength-weak .strength-value {
+  color: var(--danger);
+}
+
+.strength-medium .strength-fill {
+  width: 66%;
+  background-color: var(--accent-honey);
+}
+.strength-medium .strength-value {
+  color: var(--accent-honey);
+}
+
+.strength-strong .strength-fill {
+  width: 100%;
+  background-color: var(--mist);
+}
+.strength-strong .strength-value {
+  color: var(--mist);
+}
+
+/* Checklist items */
+.checklist-box {
+  background: rgba(5, 10, 18, 0.4);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+
+.checklist-title {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.checklist-items {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.75rem;
+  color: #64748B;
+  transition: color 0.2s ease;
+}
+
+.checklist-item.met {
+  color: var(--mist);
+}
+
+.checklist-icon {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.confirm-match-hint {
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+.confirm-match-hint.matched {
+  color: var(--mist);
+}
+.confirm-match-hint.mismatched {
+  color: var(--danger);
+}
+
+/* ── Demo Access Section (Rule 6) ────────────────────────────────────────── */
+.demo-access-card {
+  margin-top: 24px;
+  padding: 16px;
+  background: rgba(16, 24, 39, 0.5);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.demo-title {
+  font-size: 0.775rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--morning-sky);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.demo-btn {
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 0.775rem;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.15s ease;
+}
+
+.demo-btn:hover {
+  background: var(--surface-3);
+  border-color: var(--morning-sky);
+  transform: translateY(-1px);
+}
+
+.demo-btn .role-tag {
+  font-size: 0.675rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.role-tag.admin { color: #F87171; }
+.role-tag.owner { color: var(--accent-honey); }
+.role-tag.viewer { color: var(--mist); }
+
+/* ── Footer (Rule 8) ─────────────────────────────────────────────────────── */
+.auth-footer {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+/* ── Shared App Styles (Dashboard / Admin) ────────────────────────────────── */
+.app-header {
+  background-color: var(--surface-1);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.app-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.data-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.data-table th {
+  background-color: var(--surface-2);
+  color: var(--morning-sky);
+  font-weight: 600;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(202, 228, 219, 0.08);
+  color: var(--text-main);
+}
+
+.data-table tr:hover td {
+  background-color: rgba(21, 31, 48, 0.6);
+}
+
+/* Modal styling */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(5, 10, 18, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface-1);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Responsive Layout (Rule 4) ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .login-split-page {
+    flex-direction: column;
+  }
+
+  .branding-panel {
+    flex: 0 0 auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 32px 24px;
+    min-height: 280px;
+  }
+
+  .branding-headline {
+    font-size: 1.6rem;
+  }
+
+  .auth-panel {
+    flex: 1 0 auto;
+    padding: 32px 16px;
+  }
+}

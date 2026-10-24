@@ -3,82 +3,296 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TrustVault — Sign In</title>
-  <meta name="description" content="TrustVault secure document sharing — sign in to your account" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
-    .fade-in { animation: fadeIn 0.4s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  </style>
+  <title>TrustVault — Secure Document Sharing & Access Management</title>
+  <meta name="description" content="TrustVault: Enterprise-grade zero-trust document sharing with cryptographic hash-chained audit trails and granular access controls." />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Shared Design System -->
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body class="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+<body>
 
-  <div class="w-full max-w-sm fade-in">
-    <!-- Logo / heading -->
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 mb-4 text-3xl">🔐</div>
-      <h1 class="text-3xl font-bold text-white tracking-tight">TrustVault</h1>
-      <p class="text-gray-400 text-sm mt-1">Secure document sharing</p>
+  <!-- ── 5-Second Intro Overlay (First Load Only, Skippable, Prefers-Reduced-Motion) ── -->
+  <div id="intro-overlay" role="region" aria-label="Welcome to TrustVault">
+    <div class="intro-content">
+      <div class="intro-logo-wrap">
+        <div class="intro-logo-glow"></div>
+        <img src="/img/logo.svg" alt="TrustVault Logo" class="intro-logo" />
+      </div>
+      <h1 class="intro-title">TRUSTVAULT</h1>
+      <p class="intro-tagline">Secure Document Sharing &amp; Access Management</p>
+      <div class="intro-skip-hint">Click anywhere to skip</div>
     </div>
+  </div>
 
-    <!-- Card -->
-    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-2xl">
-      <!-- Error banner -->
-      <div
-        id="error-banner"
-        role="alert"
-        class="hidden mb-5 flex items-start gap-3 p-3 rounded-lg bg-red-950 border border-red-700 text-red-300 text-sm"
-      >
-        <span class="mt-0.5">⚠</span>
-        <span id="error-text"></span>
+  <!-- ── Main Login Page (Split Layout: 45% Branding / 55% Auth Card) ── -->
+  <div class="login-split-page" id="login-container">
+    
+    <!-- 45% Left Branding Panel with Connected Nodes Canvas -->
+    <aside class="branding-panel" aria-label="Branding and Security Overview">
+      <canvas id="nodes-canvas" aria-hidden="true"></canvas>
+
+      <header class="branding-header">
+        <div class="branding-brand-badge">
+          <img src="/img/logo.svg" alt="TrustVault Shield" class="brand-logo-icon" />
+          <span class="brand-name">TrustVault</span>
+        </div>
+      </header>
+
+      <div class="branding-body">
+        <h2 class="branding-headline">Zero-Trust Access for <span>Mission-Critical</span> Documents</h2>
+        <p class="branding-desc">
+          Engineered for strict isolation, real-time revocation, and cryptographically verified audit trails.
+        </p>
+
+        <ul class="security-highlights">
+          <li class="security-highlight-item">
+            <span class="highlight-bullet">✓</span>
+            <span>Cryptographic append-only hash-chained audit log</span>
+          </li>
+          <li class="security-highlight-item">
+            <span class="highlight-bullet">✓</span>
+            <span>Per-request DB permission verification &amp; instant revocation</span>
+          </li>
+          <li class="security-highlight-item">
+            <span class="highlight-bullet">✓</span>
+            <span>Enforced default-deny architecture &amp; safe file streaming</span>
+          </li>
+        </ul>
       </div>
 
-      <form id="login-form" novalidate>
-        <div class="mb-4">
-          <label for="username" class="block text-sm font-medium text-gray-300 mb-1.5">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            autocomplete="username"
-            required
-            spellcheck="false"
-            class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white
-                   placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500
-                   focus:border-transparent transition"
-            placeholder="your_username"
-          />
+      <footer class="branding-footer">
+        <p class="branding-footer-text">Protected by AES-256 storage isolation and strict role segregation</p>
+      </footer>
+    </aside>
+
+    <!-- 55% Right Auth Panel -->
+    <main class="auth-panel">
+      <div class="auth-card-wrapper">
+        
+        <div class="auth-card">
+          <!-- Sign In / Create Account Tabs -->
+          <nav class="tab-nav" role="tablist" aria-label="Authentication Options">
+            <button
+              type="button"
+              id="tab-signin"
+              class="tab-btn active"
+              role="tab"
+              aria-selected="true"
+              aria-controls="panel-signin"
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              id="tab-register"
+              class="tab-btn"
+              role="tab"
+              aria-selected="false"
+              aria-controls="panel-register"
+            >
+              Create Account
+            </button>
+          </nav>
+
+          <!-- Notification / Error Banner -->
+          <div id="error-banner" class="alert-banner alert-danger" role="alert" style="display: none;">
+            <span class="alert-icon">⚠</span>
+            <span id="error-text"></span>
+          </div>
+
+          <div id="success-banner" class="alert-banner alert-success" role="status" style="display: none;">
+            <span class="alert-icon">✓</span>
+            <span id="success-text"></span>
+          </div>
+
+          <!-- ── Panel: Sign In Form ── -->
+          <div id="panel-signin" role="tabpanel" aria-labelledby="tab-signin">
+            <form id="signin-form" novalidate>
+              <div class="form-group">
+                <label for="signin-username" class="form-label">Username</label>
+                <input
+                  type="text"
+                  id="signin-username"
+                  name="username"
+                  autocomplete="username"
+                  required
+                  spellcheck="false"
+                  class="form-input"
+                  placeholder="Enter your username"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="signin-password" class="form-label">Password</label>
+                <input
+                  type="password"
+                  id="signin-password"
+                  name="password"
+                  autocomplete="current-password"
+                  required
+                  class="form-input"
+                  placeholder="Enter your password"
+                />
+              </div>
+
+              <button type="submit" id="signin-submit-btn" class="btn-primary">
+                Sign In
+              </button>
+            </form>
+
+            <!-- ── Demo Access Section ── -->
+            <div class="demo-access-card" aria-label="Demo Access">
+              <div class="demo-title">
+                <span>🔑</span>
+                <span>Demo Access (Quick Fill)</span>
+              </div>
+              <div class="demo-buttons-grid">
+                <button type="button" id="demo-admin-btn" class="demo-btn">
+                  <span>admin</span>
+                  <span class="role-tag admin">Admin</span>
+                </button>
+                <button type="button" id="demo-owner-btn" class="demo-btn">
+                  <span>owner1</span>
+                  <span class="role-tag owner">Owner</span>
+                </button>
+                <button type="button" id="demo-viewer-btn" class="demo-btn">
+                  <span>viewer1</span>
+                  <span class="role-tag viewer">Viewer</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Panel: Create Account Form (No role field: always viewer) ── -->
+          <div id="panel-register" role="tabpanel" aria-labelledby="tab-register" style="display: none;">
+            <form id="register-form" novalidate>
+              <div class="form-group">
+                <label for="reg-fullname" class="form-label">Full Name</label>
+                <input
+                  type="text"
+                  id="reg-fullname"
+                  name="fullName"
+                  autocomplete="name"
+                  required
+                  class="form-input"
+                  placeholder="e.g. Jane Doe"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="reg-username" class="form-label">Username</label>
+                <input
+                  type="text"
+                  id="reg-username"
+                  name="username"
+                  autocomplete="username"
+                  required
+                  spellcheck="false"
+                  class="form-input"
+                  placeholder="Letters, numbers, ., -, _"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="reg-email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  id="reg-email"
+                  name="email"
+                  autocomplete="email"
+                  required
+                  class="form-input"
+                  placeholder="jane@example.com"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="reg-password" class="form-label">Password</label>
+                <input
+                  type="password"
+                  id="reg-password"
+                  name="password"
+                  autocomplete="new-password"
+                  required
+                  class="form-input"
+                  placeholder="Create a strong password"
+                />
+
+                <!-- Live Password Strength Meter -->
+                <div class="strength-section" id="strength-section">
+                  <div class="strength-header">
+                    <span class="strength-label">Password Strength:</span>
+                    <span id="strength-label-text" class="strength-value">—</span>
+                  </div>
+                  <div class="strength-track">
+                    <div id="strength-meter-bar" class="strength-fill"></div>
+                  </div>
+                </div>
+
+                <!-- Live Password Checklist -->
+                <div class="checklist-box">
+                  <div class="checklist-title">Requirements:</div>
+                  <ul class="checklist-items">
+                    <li id="rule-length" class="checklist-item">
+                      <span class="checklist-icon" id="icon-length">○</span>
+                      <span>At least 8 characters</span>
+                    </li>
+                    <li id="rule-upper" class="checklist-item">
+                      <span class="checklist-icon" id="icon-upper">○</span>
+                      <span>At least 1 uppercase letter (A-Z)</span>
+                    </li>
+                    <li id="rule-lower" class="checklist-item">
+                      <span class="checklist-icon" id="icon-lower">○</span>
+                      <span>At least 1 lowercase letter (a-z)</span>
+                    </li>
+                    <li id="rule-number" class="checklist-item">
+                      <span class="checklist-icon" id="icon-number">○</span>
+                      <span>At least 1 number (0-9)</span>
+                    </li>
+                    <li id="rule-special" class="checklist-item">
+                      <span class="checklist-icon" id="icon-special">○</span>
+                      <span>At least 1 special character (!@#$%^&amp;*...)</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-confirm-password" class="form-label">Confirm Password</label>
+                <input
+                  type="password"
+                  id="reg-confirm-password"
+                  name="confirmPassword"
+                  autocomplete="new-password"
+                  required
+                  class="form-input"
+                  placeholder="Re-enter your password"
+                />
+                <div id="confirm-match-status" class="confirm-match-hint" style="display: none;"></div>
+              </div>
+
+              <button type="submit" id="register-submit-btn" class="btn-primary">
+                Create Account
+              </button>
+            </form>
+          </div>
+
         </div>
 
-        <div class="mb-6">
-          <label for="password" class="block text-sm font-medium text-gray-300 mb-1.5">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            autocomplete="current-password"
-            required
-            class="w-full px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-white
-                   placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500
-                   focus:border-transparent transition"
-            placeholder="••••••••"
-          />
-        </div>
+        <!-- ── Footer (Rule 8) ── -->
+        <footer class="auth-footer">
+          TrustVault, Secure Document Sharing &amp; Access Management, &copy; 2026 TrustVault
+        </footer>
 
-        <button
-          type="submit"
-          id="submit-btn"
-          class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-500 disabled:opacity-50
-                 disabled:cursor-not-allowed text-white font-semibold rounded-xl
-                 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          Sign In
-        </button>
-      </form>
-    </div>
+      </div>
+    </main>
 
-    <p class="text-center text-xs text-gray-600 mt-6">TrustVault &copy; 2024 — Secure by design</p>
   </div>
 
   <script src="/js/login.js"></script>

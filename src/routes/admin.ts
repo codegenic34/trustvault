@@ -53,9 +53,16 @@ router.get('/', (req: Request, res: Response) => {
     LIMIT @limit OFFSET @offset
   `).all(params);
 
+  const countParams: Record<string, SQLInputValue> = {};
+  if (action) countParams.action = params.action;
+  if (outcome) countParams.outcome = params.outcome;
+  if (actor_id) countParams.actor_id = params.actor_id;
+  if (from) countParams.from = params.from;
+  if (to) countParams.to = params.to;
+
   const { count } = db.prepare(
     `SELECT COUNT(*) AS count FROM audit_log al ${where}`
-  ).get(params) as { count: number };
+  ).get(countParams) as { count: number };
 
   res.json({ logs, total: count, limit, offset });
 });
