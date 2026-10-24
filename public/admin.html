@@ -126,8 +126,17 @@
       </div>
 
       <!-- Pagination -->
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-muted);">
-        <span id="page-info"></span>
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-muted);">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <span id="page-info"></span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="entries-limit" style="font-size: 0.8rem; color: var(--text-muted);">Show:</label>
+            <select id="entries-limit" class="form-input" style="width: auto; padding: 4px 10px; font-size: 0.8rem; height: auto;">
+              <option value="10" selected>10 entries</option>
+              <option value="50">50 entries</option>
+            </select>
+          </div>
+        </div>
         <div style="display: flex; gap: 8px;">
           <button id="prev-btn" class="btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;" disabled>← Prev</button>
           <button id="next-btn" class="btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;" disabled>Next →</button>

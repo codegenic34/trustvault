@@ -244,6 +244,78 @@ router.get('/me', requireAuth, (req: Request, res: Response) => {
   });
 });
 
+// ── Profile Update Schema & Endpoints ─────────────────────────────────────────
+const UpdateProfileSchema = z.object({
+  fullName: z.string().max(100).optional(),
+  username: z.string().min(2).max(64).regex(/^[a-zA-Z0-9_.-]+$/),
+  email: z.string().email().max(100).or(z.literal('')).optional(),
+  lastLogin: z.string().max(100).optional(),
+});
+
+router.post('/auth/profile', requireAuth, verifyCsrf, async (req: Request, res: Response) => {
+  const parsed = UpdateProfileSchema.safeParse(req.body);
+  if (!parsed.success) {
+    const msg = parsed.error.issues[0]?.message || 'Invalid input data';
+    res.status(400).json({ error: msg });
+    return;
+  }
+
+  const { fullName, username, email, lastLogin } = parsed.data;
+
+  // Check if username is taken by another user
+  const existing = db
+    .prepare('SELECT id FROM users WHERE username = ? AND id != ?')
+    .get(username, req.user!.id);
+
+  if (existing) {
+    res.status(400).json({ error: 'Username is already taken by another account.' });
+    return;
+  }
+
+  try {
+    db.prepare(
+      `UPDATE users 
+       SET username = ?, 
+           email = ?, 
+           full_name = ?, 
+           last_login = COALESCE(?, last_login) 
+       WHERE id = ?`
+    ).run(
+      username,
+      email || null,
+      fullName || null,
+      lastLogin || null,
+      req.user!.id
+    );
+
+    writeAudit({
+      actor_id: req.user!.id,
+      action: 'PROFILE_UPDATED',
+      outcome: 'ALLOW',
+      detail: `Profile updated for user: ${username}`,
+    });
+
+    res.json({
+      message: 'Profile updated successfully.',
+      user: {
+        id: req.user!.id,
+        username,
+        role: req.user!.role,
+        full_name: fullName,
+        email,
+        last_login: lastLogin,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Unable to update profile.' });
+  }
+});
+
+router.post('/profile', requireAuth, verifyCsrf, (req: Request, res: Response, next) => {
+  (router as any).handle(Object.assign(req, { url: '/auth/profile' }), res, next);
+});
+
+
 // ── Password Change Rate Limiter: 5 attempts per 15 min per user ────────────
 const changePasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,

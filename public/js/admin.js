@@ -4,7 +4,7 @@
 
 let csrfToken = sessionStorage.getItem('csrfToken');
 let page = 0;
-const LIMIT = 50;
+let limit = 10;
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -58,7 +58,7 @@ async function loadAudit() {
   const action = document.getElementById('filter-action').value.trim();
   const actor_id = document.getElementById('filter-actor').value.trim();
 
-  const qs = new URLSearchParams({ limit: LIMIT, offset: page * LIMIT });
+  const qs = new URLSearchParams({ limit: limit, offset: page * limit });
   if (outcome) qs.set('outcome', outcome);
   if (action) qs.set('action', action);
   if (actor_id) qs.set('actor_id', actor_id);
@@ -123,7 +123,7 @@ async function loadAudit() {
   });
 
   // Pagination info
-  const start = page * LIMIT + 1;
+  const start = page * limit + 1;
   const end = Math.min(start + logs.length - 1, total);
   const info = document.getElementById('page-info');
   info.textContent = total
@@ -132,6 +132,15 @@ async function loadAudit() {
 
   document.getElementById('prev-btn').disabled = (page === 0);
   document.getElementById('next-btn').disabled = (end >= total);
+}
+
+const entriesLimitEl = document.getElementById('entries-limit');
+if (entriesLimitEl) {
+  entriesLimitEl.addEventListener('change', () => {
+    limit = parseInt(entriesLimitEl.value, 10) || 10;
+    page = 0;
+    loadAudit();
+  });
 }
 
 document.getElementById('audit-search-btn').addEventListener('click', () => {

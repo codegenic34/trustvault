@@ -75,42 +75,56 @@
         <!-- ── Panel 1: Profile ── -->
         <div id="panel-profile" class="settings-panel active" role="tabpanel" aria-labelledby="tab-profile">
           <div class="card">
-            <h2 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF; margin-bottom: 6px;">Account Profile</h2>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;">Your identity and zero-trust role assignment within TrustVault.</p>
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 20px;">
+              <div>
+                <h2 style="font-size: 1.25rem; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">Account Profile</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Manage your identity, contact details, and account credentials within TrustVault.</p>
+              </div>
+              <button type="button" id="save-profile-btn" class="btn-primary" style="padding: 9px 20px; font-size: 0.85rem; width: auto;">
+                Save Profile Changes
+              </button>
+            </div>
 
-            <div class="profile-grid">
+            <!-- Profile Status Banner -->
+            <div id="prof-alert-banner" class="alert-banner" style="display: none; margin-bottom: 20px;">
+              <span id="prof-alert-icon" class="alert-icon">✓</span>
+              <span id="prof-alert-text"></span>
+            </div>
+
+            <form id="profile-edit-form" class="profile-grid">
               <div class="profile-field">
-                <div class="profile-label">Full Name</div>
-                <div id="prof-fullname" class="profile-val">—</div>
+                <label for="prof-fullname-input" class="profile-label">Full Name</label>
+                <input type="text" id="prof-fullname-input" class="form-input profile-input" maxlength="60" placeholder="e.g. System Administrator" />
               </div>
 
               <div class="profile-field">
-                <div class="profile-label">Username</div>
-                <div id="prof-username" class="profile-val">—</div>
+                <label for="prof-username-input" class="profile-label">Username</label>
+                <input type="text" id="prof-username-input" class="form-input profile-input" maxlength="30" placeholder="e.g. admin" required spellcheck="false" />
               </div>
 
               <div class="profile-field">
-                <div class="profile-label">Email Address</div>
-                <div id="prof-email" class="profile-val">—</div>
+                <label for="prof-email-input" class="profile-label">Email Address</label>
+                <input type="email" id="prof-email-input" class="form-input profile-input" maxlength="80" placeholder="e.g. user@trustvault.local" required />
+              </div>
+
+              <div class="profile-field">
+                <label for="prof-lastlogin-input" class="profile-label">Last Active Login</label>
+                <input type="text" id="prof-lastlogin-input" class="form-input profile-input" maxlength="50" placeholder="e.g. 10/24/2026, 11:30 PM" />
               </div>
 
               <div class="profile-field">
                 <div class="profile-label">Assigned Role (Read-Only)</div>
-                <div id="prof-role-wrap" style="display: flex; align-items: center; gap: 8px;">
-                  <span id="prof-role-badge" class="badge-neutral" style="padding: 3px 10px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">—</span>
+                <div id="prof-role-wrap" style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+                  <span id="prof-role-badge" class="badge-neutral" style="padding: 4px 12px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase;">—</span>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">(Enforced by zero-trust policy)</span>
                 </div>
               </div>
 
               <div class="profile-field">
                 <div class="profile-label">Account Created</div>
-                <div id="prof-created" class="profile-val">—</div>
+                <div id="prof-created" class="profile-val" style="margin-top: 6px;">—</div>
               </div>
-
-              <div class="profile-field">
-                <div class="profile-label">Last Active Login</div>
-                <div id="prof-lastlogin" class="profile-val">—</div>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
 

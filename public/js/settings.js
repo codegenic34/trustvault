@@ -71,11 +71,16 @@ async function loadMe() {
   }
 
   // Populate Profile tab fields
-  document.getElementById('prof-fullname').textContent = user.full_name || user.username;
-  document.getElementById('prof-username').textContent = user.username;
-  document.getElementById('prof-email').textContent = user.email || `${user.username}@trustvault.local`;
-  document.getElementById('prof-created').textContent = formatDate(user.created_at);
-  document.getElementById('prof-lastlogin').textContent = formatDate(user.last_login);
+  const fnInput = document.getElementById('prof-fullname-input');
+  if (fnInput) fnInput.value = user.full_name || user.username;
+  const unInput = document.getElementById('prof-username-input');
+  if (unInput) unInput.value = user.username;
+  const emInput = document.getElementById('prof-email-input');
+  if (emInput) emInput.value = user.email || `${user.username}@trustvault.local`;
+  const llInput = document.getElementById('prof-lastlogin-input');
+  if (llInput) llInput.value = formatDate(user.last_login);
+  const crEl = document.getElementById('prof-created');
+  if (crEl) crEl.textContent = formatDate(user.created_at);
 
   const roleBadge = document.getElementById('prof-role-badge');
   if (roleBadge) {
@@ -85,9 +90,83 @@ async function loadMe() {
     } else if (user.role === 'owner') {
       roleBadge.className = 'badge-warning';
     } else {
-      roleBadge.className = 'badge-allowed';
+      roleBadge.className = 'badge-viewer';
     }
   }
+}
+
+// ── Profile Edit Handler ───────────────────────────────────────────────────
+function initProfilePanel() {
+  const saveBtn = document.getElementById('save-profile-btn');
+  const alertEl = document.getElementById('prof-alert-banner');
+  const alertText = document.getElementById('prof-alert-text');
+  const alertIcon = document.getElementById('prof-alert-icon');
+  const fnInput = document.getElementById('prof-fullname-input');
+  const unInput = document.getElementById('prof-username-input');
+  const emInput = document.getElementById('prof-email-input');
+  const llInput = document.getElementById('prof-lastlogin-input');
+
+  if (!saveBtn) return;
+
+  function showAlert(msg, isSuccess) {
+    if (!alertEl || !alertText) return;
+    alertText.textContent = msg;
+    if (isSuccess) {
+      alertEl.className = 'alert-banner alert-success';
+      if (alertIcon) alertIcon.textContent = '✓';
+    } else {
+      alertEl.className = 'alert-banner alert-danger';
+      if (alertIcon) alertIcon.textContent = '⚠';
+    }
+    alertEl.style.display = 'flex';
+  }
+
+  saveBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (alertEl) alertEl.style.display = 'none';
+
+    const username = unInput ? unInput.value.trim() : '';
+    const fullName = fnInput ? fnInput.value.trim() : '';
+    const email = emInput ? emInput.value.trim() : '';
+    const lastLogin = llInput ? llInput.value.trim() : '';
+
+    if (!username) {
+      showAlert('Username cannot be empty.', false);
+      return;
+    }
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving Changes...';
+
+    try {
+      const res = await apiFetch('/api/auth/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, username, email, lastLogin }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        showAlert('Profile updated successfully.', true);
+        const hdrUser = document.getElementById('hdr-username');
+        if (hdrUser) hdrUser.textContent = username;
+        if (currentUser) {
+          currentUser.username = username;
+          currentUser.full_name = fullName;
+          currentUser.email = email;
+          currentUser.last_login = lastLogin;
+        }
+      } else {
+        showAlert(data.error || 'Unable to update profile. Please check your inputs.', false);
+      }
+    } catch {
+      showAlert('Unable to connect to server. Please try again.', false);
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save Profile Changes';
+    }
+  });
 }
 
 // ── Tab Navigation ──────────────────────────────────────────────────────────
@@ -422,6 +501,7 @@ function initLogout() {
 // ── Bootstrap ──────────────────────────────────────────────────────────────
 (async function init() {
   await loadMe();
+  initProfilePanel();
   initTabs();
   initPasswordToggles();
   initSecurityPanel();

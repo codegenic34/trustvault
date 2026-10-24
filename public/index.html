@@ -237,6 +237,64 @@
 
   </div>
 
+  <!-- ── Successfully Logged In Animated Landing Overlay ── -->
+  <div id="login-landing-overlay" class="login-landing-overlay" style="display: none;" role="dialog" aria-modal="true" aria-label="Login Success">
+    <div class="landing-bg-cyber" aria-hidden="true">
+      <div class="landing-radar-scanner"></div>
+      <div class="landing-pulse-rings">
+        <div class="landing-ring ring-1"></div>
+        <div class="landing-ring ring-2"></div>
+        <div class="landing-ring ring-3"></div>
+      </div>
+    </div>
+    
+    <div class="landing-modal-card">
+      <div class="landing-shield-wrap">
+        <div class="landing-shield-glow"></div>
+        <img src="/img/logo.svg" alt="TrustVault Logo" class="landing-logo" />
+      </div>
+
+      <div class="landing-badge-success">
+        <span class="landing-success-dot"></span>
+        <span>ZERO-TRUST SESSION INITIALIZED</span>
+      </div>
+
+      <h2 class="landing-title">Successfully Logged In</h2>
+      <p class="landing-welcome">Welcome back, <strong id="landing-username">User</strong>!</p>
+      
+      <div class="landing-role-badge-wrap">
+        <span class="landing-role-label">Authenticated as:</span>
+        <span id="landing-role-badge" class="landing-role-badge">VIEWER</span>
+      </div>
+
+      <div class="landing-checklist">
+        <div class="landing-check-item">
+          <span class="landing-check-icon">✓</span>
+          <span>Cryptographic Hash-Chained Session Sealed</span>
+        </div>
+        <div class="landing-check-item">
+          <span class="landing-check-icon">✓</span>
+          <span>Security Tokens &amp; CSRF Synchronized</span>
+        </div>
+        <div class="landing-check-item">
+          <span class="landing-check-icon">✓</span>
+          <span>Decentralized Permissions Verified</span>
+        </div>
+      </div>
+
+      <div class="landing-progress-wrap">
+        <div class="landing-progress-track">
+          <div class="landing-progress-fill" id="landing-progress-fill"></div>
+        </div>
+        <div class="landing-progress-text">Launching workspace in <span id="landing-countdown">2</span>s…</div>
+      </div>
+
+      <button type="button" id="landing-continue-btn" class="btn-primary landing-continue-btn">
+        Enter Workspace Immediately &rarr;
+      </button>
+    </div>
+  </div>
+
   <script src="/js/login.js"></script>
 </body>
 
