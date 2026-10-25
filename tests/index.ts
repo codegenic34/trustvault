@@ -4,6 +4,7 @@ import assert from 'node:assert';
 import http from 'node:http';
 import { db } from '../src/db';
 import { verifyAuditChain } from '../src/audit';
+import '../src/server';
 
 const BASE_URL = process.env.TEST_URL || 'http://localhost:3000';
 
