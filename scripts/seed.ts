@@ -9,7 +9,7 @@ const { db, initDB, STORAGE_DIR } = require('../src/db') as typeof import('../sr
 
 const BCRYPT_ROUNDS = 12;
 
-async function seed(): Promise<void> {
+export async function seed(): Promise<void> {
   initDB();
 
   console.log('=== TrustVault Seed ===\n');
@@ -137,7 +137,9 @@ async function seed(): Promise<void> {
   console.log('\nSeed complete.');
 }
 
-seed().catch(err => {
-  console.error('Seed failed:', err);
-  process.exit(1);
-});
+if (require.main === module) {
+  seed().catch(err => {
+    console.error('Seed failed:', err);
+    process.exit(1);
+  });
+}

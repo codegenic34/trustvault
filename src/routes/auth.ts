@@ -190,7 +190,12 @@ router.post('/logout', requireAuth, verifyCsrf, (req: Request, res: Response) =>
   });
 
   if (token) deleteSession(token);
-  res.clearCookie('tv_session', { path: '/' });
+  res.clearCookie('tv_session', {
+    path: '/',
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production',
+  });
   res.json({ message: 'Logged out' });
 });
 

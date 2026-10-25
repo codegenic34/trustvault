@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "ts-node src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "ts-node --transpile-only src/server.ts",
     "seed": "ts-node --transpile-only scripts/seed.ts",
     "test": "ts-node tests/index.ts"
   },
