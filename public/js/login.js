@@ -84,7 +84,11 @@
   // ── 3 to 4 Second Intro Landing Overlay Logic ─────────────────────────────
   function setupIntroLanding() {
     const overlay = document.getElementById('intro-landing-overlay');
-    if (!overlay) return;
+    if (!overlay) {
+      const landingScan = document.getElementById('landing-scan-beam');
+      if (landingScan) landingScan.classList.add('scanning');
+      return;
+    }
 
     const step1 = document.getElementById('intro-step-1');
     const step2 = document.getElementById('intro-step-2');
@@ -94,10 +98,23 @@
 
     let dismissed = false;
 
+    function triggerLandingScan() {
+      const landingScan = document.getElementById('landing-scan-beam');
+      if (landingScan) {
+        landingScan.classList.remove('scanning');
+        void landingScan.offsetWidth; // Force CSS reflow to re-trigger
+        landingScan.classList.add('scanning');
+      }
+    }
+
     function dismissIntro() {
       if (dismissed) return;
       dismissed = true;
       overlay.classList.add('intro-fade-out');
+
+      // Trigger unique top-to-bottom cyber scan on landing page reveal
+      triggerLandingScan();
+
       setTimeout(() => {
         overlay.style.display = 'none';
       }, 650);

@@ -389,7 +389,128 @@ textarea {
   overflow: hidden;
 }
 
-/* Left 45% Branding Panel - Pure Obsidian with Radiant White Accents */
+/* ── Top-to-Bottom Cyber Scan Beams ────────────────────────────────────────── */
+.cyber-scan-beam {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(122, 157, 150, 0.4) 15%,
+    #7A9D96 30%,
+    #FFFFFF 50%,
+    var(--accent-honey) 70%,
+    rgba(122, 157, 150, 0.4) 85%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 18px rgba(122, 157, 150, 0.85),
+    0 0 38px rgba(220, 174, 29, 0.65),
+    0 -1px 8px rgba(255, 255, 255, 0.95);
+  pointer-events: none;
+  z-index: 100;
+  animation: cyberScanTopToBottom 3.2s cubic-bezier(0.2, 0.8, 0.25, 1) infinite;
+}
+
+.cyber-scan-beam::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 110px;
+  background: linear-gradient(
+    to top,
+    rgba(122, 157, 150, 0.14) 0%,
+    rgba(220, 174, 29, 0.05) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.landing-scan-beam {
+  position: absolute;
+  top: -60px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(122, 157, 150, 0.35) 15%,
+    #7A9D96 30%,
+    #FFFFFF 50%,
+    var(--accent-honey) 70%,
+    rgba(122, 157, 150, 0.35) 85%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 20px rgba(122, 157, 150, 0.9),
+    0 0 40px rgba(220, 174, 29, 0.6),
+    0 -1px 8px rgba(255, 255, 255, 0.95);
+  pointer-events: none;
+  z-index: 20;
+  opacity: 0;
+}
+
+.landing-scan-beam.scanning {
+  animation: landingScanTopToBottom 2.8s cubic-bezier(0.18, 0.85, 0.25, 1) forwards;
+}
+
+.landing-scan-beam::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(
+    to top,
+    rgba(122, 157, 150, 0.12) 0%,
+    rgba(220, 174, 29, 0.04) 45%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+@keyframes cyberScanTopToBottom {
+  0% {
+    top: -60px;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    top: 105%;
+    opacity: 0;
+  }
+}
+
+@keyframes landingScanTopToBottom {
+  0% {
+    top: -60px;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    top: 105%;
+    opacity: 0;
+  }
+}
+
+/* Left 45% Branding Panel - Pure Obsidian with Atmospheric Cyber Lighting */
 .branding-panel {
   flex: 0 0 45%;
   position: relative;
@@ -403,6 +524,164 @@ textarea {
   justify-content: space-between;
   padding: 52px;
   z-index: 1;
+}
+
+/* ── Atmospheric Cyber Background Behind Branding Content ── */
+.branding-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(122, 157, 150, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(122, 157, 150, 0.045) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: radial-gradient(circle at 45% 45%, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.3) 75%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at 45% 45%, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.3) 75%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+  animation: gridDrift 30s linear infinite;
+}
+
+@keyframes gridDrift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 38px 38px;
+  }
+}
+
+.branding-ambient-glow {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  top: 30%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(220, 174, 29, 0.09) 0%,
+    rgba(122, 157, 150, 0.09) 35%,
+    rgba(8, 14, 24, 0) 70%
+  );
+  filter: blur(52px);
+  pointer-events: none;
+  z-index: 0;
+  animation: ambientAuraPulse 9s ease-in-out infinite alternate;
+}
+
+@keyframes ambientAuraPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(-45%, -52%) scale(1.12);
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.6;
+  }
+}
+
+/* Watermark Cryptographic Security Emblem */
+.branding-watermark {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  right: -90px;
+  top: 26%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.12;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.watermark-ring {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.watermark-ring.outer {
+  inset: 0;
+  border: 1.5px dashed #7A9D96;
+  animation: watermarkRotateCW 45s linear infinite;
+}
+
+.watermark-ring.inner {
+  inset: 38px;
+  border: 1.5px solid var(--accent-honey);
+  border-left-color: transparent;
+  border-right-color: transparent;
+  animation: watermarkRotateCCW 30s linear infinite;
+}
+
+.watermark-shield {
+  width: 130px;
+  height: 130px;
+  background: url('/img/logo.svg') no-repeat center / contain;
+  filter: drop-shadow(0 0 16px rgba(220, 174, 29, 0.4));
+  animation: watermarkShieldPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes watermarkRotateCW {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes watermarkRotateCCW {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes watermarkShieldPulse {
+  0% { transform: scale(0.92); opacity: 0.55; }
+  100% { transform: scale(1.08); opacity: 0.95; }
+}
+
+/* Branding Panel Periodic Laser Sweep */
+.branding-laser-sweep {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.5px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(122, 157, 150, 0.25) 20%,
+    var(--accent-honey) 50%,
+    rgba(122, 157, 150, 0.25) 80%,
+    transparent 100%
+  );
+  box-shadow: 0 0 12px rgba(220, 174, 29, 0.5), 0 0 24px rgba(122, 157, 150, 0.4);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  animation: brandingLaserCycle 7.5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite 2s;
+}
+
+@keyframes brandingLaserCycle {
+  0% {
+    top: -20px;
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.85;
+  }
+  75% {
+    opacity: 0.85;
+  }
+  85% {
+    top: 102%;
+    opacity: 0;
+  }
+  100% {
+    top: 102%;
+    opacity: 0;
+  }
 }
 
 #nodes-canvas {
@@ -438,12 +717,25 @@ textarea {
 .brand-logo-icon {
   width: 42px;
   height: 42px;
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
-  transition: transform 0.3s ease;
+  filter: drop-shadow(0 0 14px rgba(220, 174, 29, 0.45)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+  animation: logoAuraFloat 4s ease-in-out infinite alternate;
+}
+
+@keyframes logoAuraFloat {
+  0% {
+    transform: translateY(0);
+    filter: drop-shadow(0 0 12px rgba(220, 174, 29, 0.35)) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.8));
+  }
+  100% {
+    transform: translateY(-3px);
+    filter: drop-shadow(0 0 18px rgba(220, 174, 29, 0.6)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.9));
+  }
 }
 
 .brand-logo-icon:hover {
-  transform: scale(1.08) rotate(5deg);
+  transform: scale(1.1) rotate(6deg) translateY(-2px);
+  filter: drop-shadow(0 0 22px rgba(220, 174, 29, 0.85)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.9));
 }
 
 .brand-name {
@@ -465,13 +757,32 @@ textarea {
   color: var(--pure-white);
   margin-bottom: 18px;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.7);
+  animation: headlineFadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes headlineFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .branding-headline span {
   color: var(--pure-white);
+  position: relative;
   text-decoration: underline;
   text-decoration-color: var(--accent-honey);
   text-underline-offset: 6px;
+  text-decoration-thickness: 3px;
+  transition: text-decoration-color 0.3s ease;
+}
+
+.branding-headline span:hover {
+  text-decoration-color: #FFFFFF;
 }
 
 .branding-desc {
@@ -479,6 +790,7 @@ textarea {
   line-height: 1.65;
   color: #CBD5E1;
   margin-bottom: 32px;
+  animation: headlineFadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
 }
 
 .security-highlights {
@@ -494,11 +806,28 @@ textarea {
   gap: 14px;
   font-size: 0.885rem;
   color: #F1F5F9;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s ease;
+  animation: highlightItemEntrance 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.security-highlight-item:nth-child(1) { animation-delay: 0.16s; }
+.security-highlight-item:nth-child(2) { animation-delay: 0.28s; }
+.security-highlight-item:nth-child(3) { animation-delay: 0.40s; }
+
+@keyframes highlightItemEntrance {
+  0% {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .security-highlight-item:hover {
-  transform: translateX(4px);
+  transform: translateX(6px);
+  color: #FFFFFF;
 }
 
 .highlight-bullet {
@@ -516,19 +845,59 @@ textarea {
   flex-shrink: 0;
   margin-top: 2px;
   box-shadow: 0 0 10px rgba(122, 157, 150, 0.35);
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  animation: bulletPulse 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes bulletPulse {
+  0% {
+    box-shadow: 0 0 8px rgba(122, 157, 150, 0.25);
+    border-color: #7A9D96;
+  }
+  100% {
+    box-shadow: 0 0 14px rgba(122, 157, 150, 0.55);
+    border-color: #A3C4BD;
+  }
 }
 
 .security-highlight-item:hover .highlight-bullet {
   transform: scale(1.15);
   border-color: #A3C4BD;
-  box-shadow: 0 0 16px rgba(122, 157, 150, 0.65);
+  background: rgba(122, 157, 150, 0.25);
+  box-shadow: 0 0 18px rgba(122, 157, 150, 0.75);
 }
 
 .branding-footer-text {
   font-size: 0.775rem;
   color: var(--text-muted);
   letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.branding-footer-text::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #7A9D96;
+  box-shadow: 0 0 8px #7A9D96;
+  flex-shrink: 0;
+  animation: statusDotBlink 2.5s ease-in-out infinite;
+}
+
+@keyframes statusDotBlink {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+    box-shadow: 0 0 12px #7A9D96;
+  }
 }
 
 /* ── 55% Right Auth Panel ────────────────────────────────────────────────── */
