@@ -171,12 +171,11 @@ function buildDocCard(doc) {
   }
 
   if (doc.is_owner) {
-    const shareBtn = document.createElement('button');
-    shareBtn.className = 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white transition-colors flex items-center gap-1 shadow-sm';
-    shareBtn.textContent = '🔗 Share Document';
-    shareBtn.title = 'Share this document with other users';
-    shareBtn.addEventListener('click', () => openPermModal(doc.id));
-    actions.appendChild(shareBtn);
+    const permBtn = document.createElement('button');
+    permBtn.className = 'px-3 py-1.5 text-xs rounded-lg bg-gray-700 hover:bg-gray-600 text-white transition-colors';
+    permBtn.textContent = '🔑 Permissions';
+    permBtn.addEventListener('click', () => openPermModal(doc.id));
+    actions.appendChild(permBtn);
 
     const delBtn = document.createElement('button');
     delBtn.className = 'px-3 py-1.5 text-xs rounded-lg bg-red-900 hover:bg-red-800 text-red-200 transition-colors';
