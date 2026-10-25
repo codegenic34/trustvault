@@ -12,8 +12,8 @@ ENV PORT=3000
 # Copy package manifests
 COPY package*.json ./
 
-# Install ALL dependencies (including devDependencies like ts-node and typescript)
-RUN npm install
+# Install ALL dependencies including devDependencies (which NODE_ENV=production skips by default)
+RUN npm install --include=dev
 
 # Copy application source code and static assets
 COPY . .
@@ -21,5 +21,5 @@ COPY . .
 # Expose container port
 EXPOSE 3000
 
-# Start server using ts-node in transpile-only mode so no build step is required or can fail
-CMD ["npx", "ts-node", "--transpile-only", "src/server.ts"]
+# Start server using locally installed ts-node in transpile-only mode
+CMD ["./node_modules/.bin/ts-node", "--transpile-only", "src/server.ts"]
