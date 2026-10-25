@@ -411,8 +411,42 @@ async function runTests() {
     assert.strictEqual(auditRow.actor_id, viewerAuth.user.id);
   });
 
-  // Test 8: Audit chain still verifies after all of the above
-  await test('8. Audit chain still verifies after all operations', async () => {
+  // Test 8: Backend role endpoints are admin-only (owner and viewer get 403)
+  await test('8. Owner and viewer get 403 on role management endpoints', async () => {
+    const viewerAuth = await loginUser('viewer1', 'Viewer123!');
+    const ownerAuth = await loginUser('owner1', 'Owner1234!');
+
+    // Viewer gets 403 on GET /api/admin/users
+    const viewerGetRes = await request('GET', '/api/admin/users', {
+      cookie: viewerAuth.cookieHeader,
+    });
+    assert.strictEqual(viewerGetRes.status, 403, 'Viewer GET /api/admin/users must return 403');
+
+    // Viewer gets 403 on POST /api/admin/users/:id/role
+    const viewerPostRes = await request('POST', '/api/admin/users/2/role', {
+      headers: { 'x-csrf-token': viewerAuth.csrfToken },
+      cookie: viewerAuth.cookieHeader,
+      body: { role: 'owner' },
+    });
+    assert.strictEqual(viewerPostRes.status, 403, 'Viewer POST /api/admin/users/:id/role must return 403');
+
+    // Owner gets 403 on GET /api/admin/users
+    const ownerGetRes = await request('GET', '/api/admin/users', {
+      cookie: ownerAuth.cookieHeader,
+    });
+    assert.strictEqual(ownerGetRes.status, 403, 'Owner GET /api/admin/users must return 403');
+
+    // Owner gets 403 on POST /api/admin/users/:id/role
+    const ownerPostRes = await request('POST', '/api/admin/users/3/role', {
+      headers: { 'x-csrf-token': ownerAuth.csrfToken },
+      cookie: ownerAuth.cookieHeader,
+      body: { role: 'viewer' },
+    });
+    assert.strictEqual(ownerPostRes.status, 403, 'Owner POST /api/admin/users/:id/role must return 403');
+  });
+
+  // Test 9: Audit chain still verifies after all of the above
+  await test('9. Audit chain still verifies after all operations', async () => {
     const chainStatus = verifyAuditChain();
     assert.strictEqual(chainStatus.valid, true, `Audit chain broken at row ${chainStatus.brokenAt}`);
     assert.ok(chainStatus.totalRows > 0, 'Audit log must contain verified records');
@@ -426,6 +460,7 @@ async function runTests() {
   if (failed > 0) {
     process.exit(1);
   }
+  process.exit(0);
 }
 
 runTests().catch((err) => {

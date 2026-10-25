@@ -20,6 +20,79 @@
 
 <body>
 
+  <!-- ── 3-4 Second Intro Landing Overlay ── -->
+  <div id="intro-landing-overlay" class="intro-overlay" aria-hidden="true">
+    <div class="intro-bg-glow"></div>
+    <div class="intro-content">
+      <div class="intro-logo-wrap">
+        <div class="intro-radar-ring"></div>
+        <div class="intro-radar-ring outer"></div>
+        <img src="/img/logo.svg" alt="TrustVault Shield" class="intro-logo-img" />
+      </div>
+
+      <h1 class="intro-title">TRUSTVAULT</h1>
+      <p class="intro-subtitle">ENTERPRISE ZERO-TRUST ARCHITECTURE</p>
+
+      <div class="intro-status-box">
+        <div class="intro-step active" id="intro-step-1">
+          <span class="intro-step-icon">✓</span>
+          <span class="intro-step-text">Initializing Security Enclave</span>
+        </div>
+        <div class="intro-step" id="intro-step-2">
+          <span class="intro-step-icon">✓</span>
+          <span class="intro-step-text">Verifying Cryptographic Audit Chain</span>
+        </div>
+        <div class="intro-step" id="intro-step-3">
+          <span class="intro-step-icon">✓</span>
+          <span class="intro-step-text">Zero-Trust Protocol Active</span>
+        </div>
+      </div>
+
+      <div class="intro-progress-track">
+        <div class="intro-progress-bar" id="intro-progress-bar"></div>
+      </div>
+
+      <button type="button" id="intro-skip-btn" class="intro-skip-btn">Skip Intro &rarr;</button>
+    </div>
+  </div>
+
+  <!-- ── Post-Sign-In Animated Landing Overlay ── -->
+  <div id="auth-success-overlay" class="auth-success-overlay" style="display: none;" aria-hidden="true">
+    <div class="auth-success-bg-glow" id="auth-success-glow"></div>
+    <div class="auth-success-content">
+      <div class="auth-success-shield-wrap" id="auth-success-shield">
+        <div class="auth-success-ring"></div>
+        <img src="/img/logo.svg" alt="TrustVault Shield" class="auth-success-logo" />
+      </div>
+
+      <div class="auth-success-badge" id="auth-role-badge">AUTHORIZED</div>
+      <h2 class="auth-success-title">SESSION INITIALIZED</h2>
+      <p class="auth-success-desc" id="auth-success-desc">Zero-trust cryptographic verification complete</p>
+
+      <div class="auth-success-checklist">
+        <div class="auth-check-item">
+          <span class="auth-check-icon">✓</span>
+          <span>Cryptographic Token Generated</span>
+        </div>
+        <div class="auth-check-item">
+          <span class="auth-check-icon">✓</span>
+          <span id="auth-check-role-text">Access Cleared</span>
+        </div>
+        <div class="auth-check-item">
+          <span class="auth-check-icon">✓</span>
+          <span>Routing to Secure Vault</span>
+        </div>
+      </div>
+
+      <div class="auth-success-progress-track">
+        <div class="auth-success-progress-bar" id="auth-success-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas for interactive ambient particles -->
+  <canvas id="nodes-canvas"></canvas>
+
   <!-- ── Main Login Page (Split Layout: 45% Branding / 55% Auth Card) ── -->
   <div class="login-split-page" id="login-container">
     <!-- 45% Left Branding Panel -->

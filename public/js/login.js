@@ -81,8 +81,109 @@
 
 
 
-  // ── Connected Nodes Animated Canvas with Interactive Physics & Sonar (Rule 4) ──
+  // ── 3 to 4 Second Intro Landing Overlay Logic ─────────────────────────────
+  function setupIntroLanding() {
+    const overlay = document.getElementById('intro-landing-overlay');
+    if (!overlay) return;
+
+    const step1 = document.getElementById('intro-step-1');
+    const step2 = document.getElementById('intro-step-2');
+    const step3 = document.getElementById('intro-step-3');
+    const bar = document.getElementById('intro-progress-bar');
+    const skipBtn = document.getElementById('intro-skip-btn');
+
+    let dismissed = false;
+
+    function dismissIntro() {
+      if (dismissed) return;
+      dismissed = true;
+      overlay.classList.add('intro-fade-out');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 650);
+    }
+
+    if (skipBtn) {
+      skipBtn.addEventListener('click', dismissIntro);
+    }
+
+    // Step 1: active immediately
+    if (bar) {
+      setTimeout(() => { bar.style.width = '35%'; }, 150);
+    }
+
+    // Step 2: at 1.1s
+    setTimeout(() => {
+      if (dismissed) return;
+      if (step2) step2.classList.add('active');
+      if (bar) bar.style.width = '70%';
+    }, 1100);
+
+    // Step 3: at 2.1s
+    setTimeout(() => {
+      if (dismissed) return;
+      if (step3) step3.classList.add('active');
+      if (bar) bar.style.width = '100%';
+    }, 2100);
+
+    // Fade out after 3.5 seconds
+    setTimeout(() => {
+      dismissIntro();
+    }, 3500);
+  }
+
+  // ── Post-Sign-In Animated Landing Overlay ──────────────────────────────────
+  function showPostSignInLanding(user, targetUrl) {
+    const overlay = document.getElementById('auth-success-overlay');
+    const roleBadge = document.getElementById('auth-role-badge');
+    const desc = document.getElementById('auth-success-desc');
+    const roleText = document.getElementById('auth-check-role-text');
+    const shield = document.getElementById('auth-success-shield');
+    const glow = document.getElementById('auth-success-glow');
+    const bar = document.getElementById('auth-success-bar');
+
+    if (!overlay) {
+      window.location.replace(targetUrl);
+      return;
+    }
+
+    const role = (user.role || 'viewer').toLowerCase();
+    const roleUpper = role.toUpperCase();
+
+    if (roleBadge) {
+      roleBadge.textContent = `${roleUpper} AUTHORIZED`;
+      roleBadge.className = `auth-success-badge role-${role}`;
+    }
+    if (desc) {
+      desc.textContent = `Zero-trust identity verified for "${user.username}".`;
+    }
+    if (roleText) {
+      roleText.textContent = `Access Level: ${roleUpper} Permissions`;
+    }
+
+    if (shield) {
+      shield.classList.remove('admin-glow', 'owner-glow', 'viewer-glow');
+      shield.classList.add(`${role}-glow`);
+    }
+    if (glow) {
+      glow.classList.remove('admin-glow', 'owner-glow', 'viewer-glow');
+      glow.classList.add(`${role}-glow`);
+    }
+
+    overlay.style.display = 'flex';
+    requestAnimationFrame(() => {
+      overlay.classList.add('active');
+      if (bar) bar.style.width = '100%';
+    });
+
+    setTimeout(() => {
+      window.location.replace(targetUrl);
+    }, 2200);
+  }
+
+  // ── Connected Nodes Animated Canvas with Interactive Physics & Sonar ──
   function setupCanvasAnimation() {
+    const canvas = document.getElementById('nodes-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -502,7 +603,7 @@
       sessionStorage.setItem('csrfToken', data.csrfToken);
 
       const targetUrl = data.user.role === 'admin' ? '/admin.html' : '/dashboard.html';
-      window.location.replace(targetUrl);
+      showPostSignInLanding(data.user, targetUrl);
     } catch {
       // Network or unexpected failure — still unified error message
       showError('Invalid username or password.');
@@ -572,5 +673,9 @@
       regBtn.textContent = 'Create Account';
     }
   });
+
+  // Initialize Landing Intro and Canvas animations
+  setupIntroLanding();
+  setupCanvasAnimation();
 
 })();

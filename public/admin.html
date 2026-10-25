@@ -83,42 +83,6 @@
       </div>
     </section>
 
-    <!-- User Role Management section -->
-    <section class="card" style="margin-bottom: 32px;">
-      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px;">
-        <div>
-          <h2 style="font-size: 1.15rem; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; gap: 8px;">
-            <span style="color: var(--accent-honey);">👥</span> User Role Management
-          </h2>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-            Switch access tiers: promote a Viewer to an Owner (allows uploading and sharing documents), or change an Owner to a Viewer.
-          </p>
-        </div>
-        <button id="refresh-users-btn" class="btn-secondary" style="padding: 6px 14px; font-size: 0.8rem;">Refresh Users</button>
-      </div>
-
-      <div id="role-alert-banner" class="alert-banner hidden" style="margin-bottom: 16px;"></div>
-
-      <div class="data-table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th style="width: 48px;">ID</th>
-              <th>Username</th>
-              <th>Full Name</th>
-              <th>Email</th>
-              <th>Assigned Role</th>
-              <th style="text-align: right;">Switch Role Action</th>
-            </tr>
-          </thead>
-          <tbody id="users-tbody">
-            <tr>
-              <td colspan="6" style="text-align: center; padding: 20px; color: var(--text-muted);">Loading users…</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
 
     <!-- Audit log section -->
     <section class="card">

@@ -95,6 +95,55 @@ async function loadMe() {
       roleBadge.className = 'badge-viewer';
     }
   }
+
+  renderAboutSection(user.role);
+}
+
+// ── About Section (Role-Specific) ──────────────────────────────────────────
+function renderAboutSection(role) {
+  const container = document.getElementById('about-role-grid');
+  if (!container) return;
+  container.textContent = '';
+
+  const roleCards = {
+    viewer: [
+      { label: 'DOCUMENT ACCESS', val: 'View documents shared with you' },
+      { label: 'ACTIVITY AUDIT', val: 'See your own activity' },
+      { label: 'CREDENTIALS', val: 'Change your password' },
+      { label: 'ACCESS GOVERNANCE', val: 'Access is granted by document owners' },
+    ],
+    owner: [
+      { label: 'DOCUMENT MANAGEMENT', val: 'Upload and manage your documents' },
+      { label: 'ACCESS CONTROL', val: 'Grant or revoke read/edit access' },
+      { label: 'DOCUMENT AUDIT', val: 'View access history for your documents' },
+    ],
+    admin: [
+      { label: 'USER MANAGEMENT', val: 'Manage users and roles' },
+      { label: 'SECURITY MONITORING', val: 'View system-wide audit logs and suspicious activity' },
+      { label: 'CRYPTOGRAPHIC INTEGRITY', val: 'Verify the audit chain' },
+    ],
+  };
+
+  const cards = roleCards[role] || roleCards.viewer;
+
+  cards.forEach(c => {
+    const field = document.createElement('div');
+    field.className = 'profile-field';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'profile-label';
+    lbl.textContent = c.label;
+
+    const val = document.createElement('div');
+    val.className = 'profile-val';
+    val.style.fontSize = '0.85rem';
+    val.style.color = 'var(--mist)';
+    val.textContent = c.val;
+
+    field.appendChild(lbl);
+    field.appendChild(val);
+    container.appendChild(field);
+  });
 }
 
 // ── Profile Edit Handler ───────────────────────────────────────────────────
@@ -174,6 +223,10 @@ function initTabs() {
   const panels = document.querySelectorAll('.settings-panel');
 
   function switchTab(tabId) {
+    if (tabId === 'roles' && (!currentUser || currentUser.role !== 'admin')) {
+      tabId = 'profile';
+    }
+
     tabBtns.forEach(btn => {
       const active = btn.dataset.tab === tabId;
       btn.classList.toggle('active', active);
@@ -202,8 +255,10 @@ function initTabs() {
 
   // Handle URL hash on load
   const initialHash = window.location.hash.replace('#', '');
-  if (['profile', 'security', 'sessions', 'about', 'roles'].includes(initialHash)) {
+  if (['profile', 'security', 'sessions', 'about'].includes(initialHash)) {
     switchTab(initialHash);
+  } else if (initialHash === 'roles' && currentUser && currentUser.role === 'admin') {
+    switchTab('roles');
   }
 }
 
@@ -646,6 +701,10 @@ function showRolesAlert(msg, isSuccess) {
 }
 
 async function changeRole(userId, username, newRole) {
+  if (currentUser && userId === currentUser.id) {
+    showRolesAlert('Admin cannot change their own role.', false);
+    return;
+  }
   if (!confirm(`Are you sure you want to change user "${username}" to "${newRole}"?`)) return;
 
   try {
