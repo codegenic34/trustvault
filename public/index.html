@@ -20,26 +20,8 @@
 
 <body>
 
-  <!-- ── 5-Second Intro Overlay (First Load Only, Skippable, Prefers-Reduced-Motion) ── -->
-  <div id="intro-overlay" role="region" aria-label="Welcome to TrustVault">
-    <div class="intro-radar-scanner" aria-hidden="true"></div>
-    <div class="intro-content">
-      <div class="intro-logo-wrap">
-        <div class="intro-ring-outer" aria-hidden="true"></div>
-        <div class="intro-ring-inner" aria-hidden="true"></div>
-        <div class="intro-shockwave" aria-hidden="true"></div>
-        <img src="/img/logo.svg" alt="TrustVault Logo" class="intro-logo" />
-      </div>
-      <h1 class="intro-title">TRUSTVAULT</h1>
-      <p class="intro-tagline">Secure Document Sharing &amp; Access Management</p>
-    </div>
-  </div>
-
   <!-- ── Main Login Page (Split Layout: 45% Branding / 55% Auth Card) ── -->
   <div class="login-split-page" id="login-container">
-    <!-- Full-page background connected nodes canvas -->
-    <canvas id="nodes-canvas" aria-hidden="true"></canvas>
-
     <!-- 45% Left Branding Panel -->
     <aside class="branding-panel" aria-label="Branding and Security Overview">
 
@@ -236,38 +218,6 @@
       </div>
     </main>
 
-  </div>
-
-  <!-- ── Successfully Logged In Animated Landing Overlay (Minimalist with Animated Person) ── -->
-  <div id="login-landing-overlay" class="login-landing-overlay" style="display: none;" role="dialog" aria-modal="true" aria-label="Login Success">
-    <div class="landing-person-card">
-      <!-- Animated Person Figure -->
-      <div class="animated-person-wrapper">
-        <div class="person-aura-glow"></div>
-        <svg class="animated-person-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Ambient Rotating Outer Ring -->
-          <circle cx="60" cy="60" r="54" stroke="rgba(56, 189, 248, 0.35)" stroke-width="2" stroke-dasharray="6 4" class="person-ring" />
-          <!-- Person Head -->
-          <circle cx="60" cy="38" r="16" fill="#F8FAFC" class="person-head" />
-          <!-- Person Body / Torso -->
-          <path d="M28 94 C28 68, 42 60, 60 60 C78 60, 92 68, 92 94 Z" fill="#94A3B8" class="person-body" />
-          <!-- Waving Hand -->
-          <path d="M88 72 C96 64, 104 50, 98 42 C93 42, 88 54, 84 62 Z" fill="#F8FAFC" class="person-hand-wave" />
-          <!-- Identity Badge Dot -->
-          <circle cx="60" cy="74" r="5" fill="#38BDF8" class="person-badge-dot" />
-          <!-- Subtle Biometric Scanning Beam -->
-          <line x1="22" y1="20" x2="98" y2="20" stroke="#38BDF8" stroke-width="2.5" class="person-scan-beam" />
-        </svg>
-      </div>
-
-      <h2 class="landing-welcome-title">Welcome, <span id="landing-username">User</span></h2>
-      <p class="landing-status-msg">Authentication verified. Entering workspace…</p>
-      
-      <!-- Minimalist Progress Bar (2.5s) -->
-      <div class="landing-minimal-progress">
-        <div class="landing-minimal-bar" id="landing-progress-fill"></div>
-      </div>
-    </div>
   </div>
 
   <script src="/js/login.js"></script>

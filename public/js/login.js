@@ -4,7 +4,6 @@
 
 (function () {
   // ── Elements ───────────────────────────────────────────────────────────────
-  const introOverlay = document.getElementById('intro-overlay');
   const tabSignIn = document.getElementById('tab-signin');
   const tabRegister = document.getElementById('tab-register');
   const panelSignIn = document.getElementById('panel-signin');
@@ -49,7 +48,6 @@
   const iconSpecial = document.getElementById('icon-special');
 
   const confirmMatchEl = document.getElementById('confirm-match-status');
-  const canvas = document.getElementById('nodes-canvas');
 
   // In-memory demo credentials only — NEVER written to localStorage
   const DEMO_CREDENTIALS = {
@@ -81,39 +79,7 @@
     if (successText) successText.textContent = '';
   }
 
-  // ── 5-Second Intro on First Load Only (Rule 3) ─────────────────────────────
-  function setupIntro() {
-    if (!introOverlay) return;
 
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const introAlreadySeen = sessionStorage.getItem('tv_intro_seen');
-
-    if (prefersReducedMotion || introAlreadySeen) {
-      introOverlay.style.display = 'none';
-      return;
-    }
-
-    sessionStorage.setItem('tv_intro_seen', '1');
-
-    let dismissed = false;
-    function dismissIntro() {
-      if (dismissed) return;
-      dismissed = true;
-      introOverlay.classList.add('fade-out');
-      setTimeout(() => {
-        introOverlay.style.display = 'none';
-      }, 850);
-    }
-
-    // Auto-dismiss after 5 seconds
-    const timer = setTimeout(dismissIntro, 5000);
-
-    // Skippable by clicking anywhere
-    introOverlay.addEventListener('click', () => {
-      clearTimeout(timer);
-      dismissIntro();
-    });
-  }
 
   // ── Connected Nodes Animated Canvas with Interactive Physics & Sonar (Rule 4) ──
   function setupCanvasAnimation() {
@@ -536,7 +502,7 @@
       sessionStorage.setItem('csrfToken', data.csrfToken);
 
       const targetUrl = data.user.role === 'admin' ? '/admin.html' : '/dashboard.html';
-      showLandingPage(data.user, targetUrl);
+      window.location.replace(targetUrl);
     } catch {
       // Network or unexpected failure — still unified error message
       showError('Invalid username or password.');
@@ -545,36 +511,6 @@
       signInBtn.textContent = 'Sign In';
     }
   });
-
-  // ── Show Minimalist Animated Person Landing Page After Login (2 to 3 seconds) ──
-  function showLandingPage(user, targetUrl) {
-    const overlay = document.getElementById('login-landing-overlay');
-    if (!overlay) {
-      window.location.replace(targetUrl);
-      return;
-    }
-
-    const usernameEl = document.getElementById('landing-username');
-    const fillBar = document.getElementById('landing-progress-fill');
-
-    if (usernameEl) usernameEl.textContent = user.username;
-
-    overlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-
-    // 2.5s smooth progress bar (2 to 3 seconds)
-    if (fillBar) {
-      fillBar.style.width = '0%';
-      setTimeout(() => {
-        fillBar.style.transition = 'width 2.4s cubic-bezier(0.16, 1, 0.3, 1)';
-        fillBar.style.width = '100%';
-      }, 50);
-    }
-
-    setTimeout(() => {
-      window.location.replace(targetUrl);
-    }, 2500);
-  }
 
   // ── Create Account Form Submission (Rule 5) ────────────────────────────────
   regForm.addEventListener('submit', async (e) => {
@@ -637,7 +573,4 @@
     }
   });
 
-  // ── Initialize ─────────────────────────────────────────────────────────────
-  setupIntro();
-  setupCanvasAnimation();
 })();
