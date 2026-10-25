@@ -2,6 +2,11 @@
 
 > A zero-trust, security-graded document-sharing platform engineered with defense-in-depth, cryptographic audit integrity, and strictly enforced least-privilege access.
 
+- 🌐 **Live Website:** [https://trustvault-a0dn.onrender.com](https://trustvault-a0dn.onrender.com)
+- 📦 **GitHub Repository:** [https://github.com/codegenic34/trustvault](https://github.com/codegenic34/trustvault)
+
+[![Live Demo](https://img.shields.io/badge/Render-Live%20Demo-46E3B7?logo=render&logoColor=white)](https://trustvault-a0dn.onrender.com)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?logo=github&logoColor=white)](https://github.com/codegenic34/trustvault)
 [![Security Graded](https://img.shields.io/badge/Security-Graded%20Hackathon-blueviolet.svg)](#security-architecture)
 [![Node.js](https://img.shields.io/badge/Node.js-v22%2B%20(node%3Asqlite)-339933.svg)](#tech-stack)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue.svg)](#tech-stack)
